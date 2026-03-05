@@ -1,6 +1,3 @@
-import RegisterForm from "@/src/components/register-modal/register/RegisterForm";
+export default function Home() {
 
-
-export default function RegisterPage() {
-  return <RegisterForm />;
 }

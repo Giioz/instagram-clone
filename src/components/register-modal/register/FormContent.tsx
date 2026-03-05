@@ -1,6 +1,6 @@
 import TextInput from '../shared/TextInput';
 import BirthdayInput from '../shared/BirthdayInput';
-import LegalTextAndButton from './LegalTextAndButton';
+import LegalTextAndButton from './RegisterPageTextAndButton';
 
 interface FormContentProps {
   formData: {

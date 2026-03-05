@@ -1,19 +1,29 @@
 "use client";
 
-import { useLoginForm } from "@/src/hooks/useLoginForm";
-import Header from "../../register-modal/register/Header";
-import LoginFormContent from "./LoginFormContent";
-export default function LoginForm() {
-  const { formData, isLoading, error, handleChange, handleSubmit } =
-    useLoginForm();
+import { useRegisterForm } from "@/src/hooks/useRegisterForm";
+import Header from "./Header";
+import FormContent from "./FormContent";
+
+export default function RegisterForm() {
+  const {
+    formData,
+    isLoading,
+    error,
+    usernameError,
+    handleChange,
+    handleSubmit,
+    months,
+    days,
+    years,
+  } = useRegisterForm();
 
   return (
-    <div className="min-h-screen bg-[#162127] flex items-center justify-center py-12 px-4">
+    <div className="min-h-screen bg-[#162127] text-[white] flex items-center justify-center py-12 px-4">
       <div className="w-full max-w-160">
         <Header />
         <div className="bg-[#162127] rounded-lg w-full p-8">
           <h2 className="text-[24px] font-bold text-white mb-6">
-            Log in to Instagram
+            Sign up to Instagram
           </h2>
 
           {error && (
@@ -22,21 +32,25 @@ export default function LoginForm() {
             </div>
           )}
 
-          <LoginFormContent
+          <FormContent
             formData={formData}
             handleChange={handleChange}
             handleSubmit={handleSubmit}
+            usernameError={usernameError}
             isLoading={isLoading}
+            months={months}
+            days={days}
+            years={years}
           />
         </div>
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-400">
-            Don t have an account?{" "}
+            Have an account?{" "}
             <a
-              href="/register"
+              href="/login"
               className="text-blue-400 hover:underline font-semibold"
             >
-              Sign up
+              Log in
             </a>
           </p>
         </div>
