@@ -1,7 +1,7 @@
-import TextInput from '../shared/TextInput';
-import BirthdayInput from '../shared/BirthdayInput';
-import LegalTextAndButton from './RegisterPageTextAndButton';
-
+import TextInput from "../shared/TextInput";
+import BirthdayInput from "../shared/BirthdayInput";
+import LegalTextAndButton from "./RegisterPageTextAndButton";
+import Link from "next/link";
 interface FormContentProps {
   formData: {
     email: string;
@@ -12,7 +12,9 @@ interface FormContentProps {
     day: string;
     year: string;
   };
-  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  handleChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => void;
   handleSubmit: (e: React.FormEvent) => void;
   usernameError: string;
   isLoading: boolean;
@@ -29,11 +31,10 @@ export default function FormContent({
   isLoading,
   months,
   days,
-  years
+  years,
 }: FormContentProps) {
   return (
     <form className="space-y-5 w-full" onSubmit={handleSubmit}>
-      
       <label className="text-[17px] font-semibold mb-1.25 block">
         Mobile number or email
       </label>
@@ -46,10 +47,10 @@ export default function FormContent({
         required
       />
       <p className="text-[15px] font-semibold mb-3.75 ">
-        You may receive notifications from us.{' '}
-        <a href="#" className="text-blue-400 hover:underline">
+        You may receive notifications from us.{" "}
+        <Link href="#" className="text-blue-400 hover:underline">
           Learn why we ask for your contact <br /> information
-        </a>
+        </Link>
       </p>
 
       <label className="text-[17px] font-semibold mb-1.25 block">
@@ -103,9 +104,7 @@ export default function FormContent({
         </div>
       </div>
 
-      <label className="text-[17px] font-semibold mb-1.25 block">
-        Name
-      </label>
+      <label className="text-[17px] font-semibold mb-1.25 block">Name</label>
       <TextInput
         name="name"
         type="text"

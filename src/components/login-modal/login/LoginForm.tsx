@@ -1,6 +1,7 @@
 "use client";
 
 import { useLoginForm } from "@/src/hooks/useLoginForm";
+import Link from "next/link";
 import Header from "../../register-modal/register/Header";
 import LoginFormContent from "./LoginFormContent";
 export default function LoginForm() {
@@ -32,12 +33,12 @@ export default function LoginForm() {
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-400">
             Don t have an account?{" "}
-            <a
+            <Link
               href="/register"
               className="text-blue-400 hover:underline font-semibold"
             >
               Sign up
-            </a>
+            </Link>
           </p>
         </div>
       </div>

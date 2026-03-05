@@ -1,32 +1,35 @@
-interface  RegisterPageTextAndButton {
+import Link from "next/link";
+interface RegisterPageTextAndButton {
   isLoading: boolean;
 }
 
-export default function RegisterPageTextAndButton({ isLoading }: RegisterPageTextAndButton) {
+export default function RegisterPageTextAndButton({
+  isLoading,
+}: RegisterPageTextAndButton) {
   return (
     <>
       <div className="w-full flex flex-col gap-2.5 text-[15px] mb-0.75">
         <div className="text-gray-400">
           People who use our service may have uploaded your contact information
           to Instagram.{" "}
-          <a href="#" className="text-blue-400 hover:underline">
+          <Link href="#" className="text-blue-400 hover:underline">
             Learn more
-          </a>
+          </Link>
         </div>
 
         <div className=" text-gray-400">
           By tapping Submit, you agree to create an account and to Instagram s{" "}
-          <a href="#" className="text-blue-400 hover:underline">
+          <Link href="#" className="text-blue-400 hover:underline">
             Terms
-          </a>
+          </Link>
           , <br />
-          <a href="#" className="text-blue-400 hover:underline">
+          <Link href="#" className="text-blue-400 hover:underline">
             Privacy Policy
-          </a>{" "}
+          </Link>{" "}
           and{" "}
-          <a href="#" className="text-blue-400 hover:underline">
+          <Link href="#" className="text-blue-400 hover:underline">
             Cookies Policy
-          </a>
+          </Link>
           .
         </div>
 
@@ -42,7 +45,7 @@ export default function RegisterPageTextAndButton({ isLoading }: RegisterPageTex
         disabled={isLoading}
         className="w-140 h-11 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:opacity-50 text-white font-semibold rounded-[22px] transition duration-200 text-[14px]"
       >
-        {isLoading ? 'Creating account...' : 'Submit'}
+        {isLoading ? "Creating account..." : "Submit"}
       </button>
     </>
   );

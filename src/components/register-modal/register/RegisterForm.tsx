@@ -2,6 +2,7 @@
 
 import { useRegisterForm } from "@/src/hooks/useRegisterForm";
 import Header from "./Header";
+import Link from "next/link";
 import FormContent from "./FormContent";
 
 export default function RegisterForm() {
@@ -46,12 +47,12 @@ export default function RegisterForm() {
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-400">
             Have an account?{" "}
-            <a
+            <Link
               href="/login"
               className="text-blue-400 hover:underline font-semibold"
             >
               Log in
-            </a>
+            </Link>
           </p>
         </div>
       </div>
