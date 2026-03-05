@@ -1,8 +1,8 @@
-interface LegalTextAndButtonProps {
+interface  RegisterPageTextAndButton {
   isLoading: boolean;
 }
 
-export default function LegalTextAndButton({ isLoading }: LegalTextAndButtonProps) {
+export default function RegisterPageTextAndButton({ isLoading }: RegisterPageTextAndButton) {
   return (
     <>
       <div className="w-full flex flex-col gap-2.5 text-[15px] mb-0.75">
