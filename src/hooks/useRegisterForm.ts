@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export function useRegisterForm() {
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ export function useRegisterForm() {
   const [usernameError, setUsernameError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -50,6 +52,9 @@ export function useRegisterForm() {
       }
 
       console.log("Registration successful:", data);
+      
+      // Redirect to login page after successful registration
+      router.push("/login");
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
