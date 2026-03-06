@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { prisma } from "@/src/library/db";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
+const JWT_SECRET = process.env.JWT_SECRET || "change-this-in-production";
 
 export async function POST(request: NextRequest) {
   try {
@@ -37,10 +37,10 @@ export async function POST(request: NextRequest) {
     }
 
     const token = jwt.sign(
-      { 
-        userId: user.id, 
-        email: user.email, 
-        username: user.username 
+      {
+        userId: user.id,
+        email: user.email,
+        username: user.username,
       },
       JWT_SECRET,
       { expiresIn: "7d" }
