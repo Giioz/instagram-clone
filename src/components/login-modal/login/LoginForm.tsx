@@ -1,18 +1,22 @@
 "use client";
 
 import { useLoginForm } from "@/src/hooks/useLoginForm";
-import Link from "next/link";
 
 import LoginFormContent from "./LoginFormContent";
+import LoginLeftSide from "./LoginLeftSide";
+
 export default function LoginForm() {
   const { formData, isLoading, error, handleChange, handleSubmit } =
     useLoginForm();
 
   return (
-    <div className="min-h-screen bg-[#162127] flex items-center justify-center py-12 px-4">
-      <div className="w-full max-w-160">
-        <div className="bg-[#162127] rounded-lg w-full p-8">
-          <h2 className="text-[24px] font-bold text-white mb-6">
+    <div className="flex h-[91vh]  ">
+      <div className="w-194.5 border-r-2 border-gray-300 bg-[#0B1014]">
+        <LoginLeftSide />
+      </div>
+      <div className="w-185 m-auto bg-white ">
+        <div className="w-full max-w-md px-8">
+          <h2 className="text-[24px] font-bold text-gray-800 mb-6 text-center">
             Log in to Instagram
           </h2>
 
@@ -28,17 +32,6 @@ export default function LoginForm() {
             handleSubmit={handleSubmit}
             isLoading={isLoading}
           />
-        </div>
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-400">
-            Don t have an account?{" "}
-            <Link
-              href="/register"
-              className="text-blue-400 hover:underline font-semibold"
-            >
-              Sign up
-            </Link>
-          </p>
         </div>
       </div>
     </div>

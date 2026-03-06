@@ -1,4 +1,5 @@
-import TextInput from "../../register-modal/shared/TextInput";
+import LogInTextInput from "../../../shared/LogInTextInput";
+import Link from "next/link";
 
 interface LoginFormContentProps {
   formData: {
@@ -17,23 +18,18 @@ export default function LoginFormContent({
   isLoading,
 }: LoginFormContentProps) {
   return (
-    <form
-      className="space-y-5 w-full flex flex-col items-center"
-      onSubmit={handleSubmit}
-    >
-      <div className="w-full">
-        <TextInput
+    <div className="w-full ml-12 ">
+      <form className="space-y-5 w-136.5 flex flex-col" onSubmit={handleSubmit}>
+        <LogInTextInput
           name="email"
           type="text"
-          placeholder="Mobile number or email"
+          placeholder="Mobile number, username or email"
           value={formData.email}
           onChange={handleChange}
           required
         />
-      </div>
 
-      <div className="w-full">
-        <TextInput
+        <LogInTextInput
           name="password"
           type="password"
           placeholder="Password"
@@ -41,15 +37,26 @@ export default function LoginFormContent({
           onChange={handleChange}
           required
         />
-      </div>
 
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full bg-[rgb(0,149,246)] text-white font-semibold py-3 rounded-full hover:bg-[rgb(0,119,206)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-      >
-        {isLoading ? "Logging in..." : "Log in"}
-      </button>
-    </form>
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full bg-[#1d4ed8] text-white font-medium py-3 rounded-full hover:bg-[#1e40af] disabled:opacity-50 transition"
+        >
+          {isLoading ? "Logging in..." : "Log in"}
+        </button>
+
+        <p className="text-gray-300 text-sm text-center cursor-pointer hover:underline mt-3 ">
+          Forgot password?
+        </p>
+
+        <Link
+          href="/register"
+          className="w-136.5 border mt-5 border-blue-400 text-blue-400 py-3 rounded-full hover:bg-blue-400/10 transition text-center block"
+        >
+          Create new account
+        </Link>
+      </form>
+    </div>
   );
 }
