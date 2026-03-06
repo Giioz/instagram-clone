@@ -1,5 +1,5 @@
-import TextInput from "../shared/TextInput";
-import BirthdayInput from "../shared/BirthdayInput";
+import TextInput from "../../../shared/TextInput";
+import BirthdayInput from "../../../shared/BirthdayInput";
 import LegalTextAndButton from "./RegisterPageTextAndButton";
 import Link from "next/link";
 interface FormContentProps {
