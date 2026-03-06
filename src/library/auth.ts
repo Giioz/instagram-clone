@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 import { NextRequest } from "next/server";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
+const JWT_SECRET = process.env.JWT_SECRET || "instagram-clone-production-secret-key-2025";
+// ეს ვერ გავიგე ამის გარეშე როგორ გავაკეთო. "instagram-clone-production-secret-key-2025" 
 
 export interface JWTPayload {
   userId: string;
