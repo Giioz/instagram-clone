@@ -2,7 +2,7 @@
 
 import { useLoginForm } from "@/src/hooks/useLoginForm";
 import Link from "next/link";
-import Header from "../../register-modal/register/Header";
+
 import LoginFormContent from "./LoginFormContent";
 export default function LoginForm() {
   const { formData, isLoading, error, handleChange, handleSubmit } =
@@ -11,7 +11,6 @@ export default function LoginForm() {
   return (
     <div className="min-h-screen bg-[#162127] flex items-center justify-center py-12 px-4">
       <div className="w-full max-w-160">
-        <Header />
         <div className="bg-[#162127] rounded-lg w-full p-8">
           <h2 className="text-[24px] font-bold text-white mb-6">
             Log in to Instagram
