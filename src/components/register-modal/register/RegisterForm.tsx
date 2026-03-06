@@ -1,7 +1,6 @@
 "use client";
 
 import { useRegisterForm } from "@/src/hooks/useRegisterForm";
-import Header from "./Header";
 import Link from "next/link";
 import FormContent from "./FormContent";
 
@@ -21,7 +20,6 @@ export default function RegisterForm() {
   return (
     <div className="min-h-screen bg-[#162127] text-[white] flex items-center justify-center py-12 px-4">
       <div className="w-full max-w-160">
-        <Header />
         <div className="bg-[#162127] rounded-lg w-full p-8">
           <h2 className="text-[24px] font-bold text-white mb-6">
             Sign up to Instagram
