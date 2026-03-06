@@ -1,4 +1,4 @@
-import RegisterForm from "@/src/components/register-modal/register/RegisterForm";
+import RegisterForm from "@/src/components/register/register/RegisterForm";
 
 
 export default function RegisterPage() {
