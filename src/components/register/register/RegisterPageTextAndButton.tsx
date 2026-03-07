@@ -1,4 +1,8 @@
 import Link from "next/link";
+
+import SubmitButton from "@/src/shared/SubmitButton";
+import HaveAccountButton from "@/src/shared/HaveAccountButton";
+
 interface RegisterPageTextAndButton {
   isLoading: boolean;
 }
@@ -8,45 +12,46 @@ export default function RegisterPageTextAndButton({
 }: RegisterPageTextAndButton) {
   return (
     <>
-      <div className="w-full flex flex-col gap-2.5 text-[15px] mb-0.75">
-        <div className="text-gray-400">
+      <div className="w-full md:w-[560px] flex flex-col gap-2.5 text-[15px]">
+        <div className="text-white">
           People who use our service may have uploaded your contact information
           to Instagram.{" "}
-          <Link href="#" className="text-blue-400 hover:underline">
+          <Link href="#" className="font-semibold text-[#4CA9FE] hover:underline">
             Learn more
           </Link>
         </div>
 
-        <div className=" text-gray-400">
-          By tapping Submit, you agree to create an account and to Instagram s{" "}
-          <Link href="#" className="text-blue-400 hover:underline">
+        <div className="text-white">
+          By tapping Submit, you agree to create an account and to Instagram's{" "}
+          <Link href="#" className="font-semibold text-[#4CA9FE] hover:underline">
             Terms
           </Link>
-          , <br />
-          <Link href="#" className="text-blue-400 hover:underline">
+          ,{" "}
+          <Link href="#" className="font-semibold text-[#4CA9FE] hover:underline">
             Privacy Policy
           </Link>{" "}
           and{" "}
-          <Link href="#" className="text-blue-400 hover:underline">
+          <Link href="#" className="font-semibold text-[#4CA9FE] hover:underline">
             Cookies Policy
           </Link>
           .
         </div>
 
-        <div className="text-gray-400">
-          The Privacy describes the ways we can use the information we collect
-          when you create an account. For example, we use this information to
-          provide, personalize and improve our products, including ads.
+        <div className="text-white">
+          The{" "}
+          <Link href="#" className="font-semibold text-[#4CA9FE] hover:underline">
+            Privacy Policy
+          </Link>{" "}
+          describes the ways we can use the information we collect when you
+          create an account. For example, we use this information to provide,
+          personalize and improve our products, including ads.
         </div>
       </div>
 
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-140 h-11 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:opacity-50 text-white font-semibold rounded-[22px] transition duration-200 text-[14px]"
-      >
-        {isLoading ? "Creating account..." : "Submit"}
-      </button>
+      <div className="w-full md:w-[560px] flex flex-col gap-3">
+        <SubmitButton isLoading={isLoading} />
+        <HaveAccountButton />
+      </div>
     </>
   );
 }
