@@ -69,13 +69,6 @@ export const useLoginStore = create<LoginStore>((set, get) => ({
       return false;
     }
     
-    if (password.length < 6) {
-      set(state => ({
-        errors: { ...state.errors, password: 'Password must be at least 6 characters' }
-      }));
-      return false;
-    }
-    
     set(state => ({
       errors: { ...state.errors, password: undefined }
     }));
