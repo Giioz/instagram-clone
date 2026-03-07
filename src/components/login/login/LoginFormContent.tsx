@@ -24,9 +24,9 @@ export default function LoginFormContent({
   fieldErrors,
 }: LoginFormContentProps) {
   return (
-    <div className="w-143.75  mx-auto px-4">
+    <div className="w-full lg:w-143.75 mx-auto px-4">
       <div className="flex items-center mb-8">
-        <button className="mr-4 p-2 hover:bg-gray-100 rounded-full transition-colors">
+        <button className="mr-4 p-2 ">
           <ArrowLeft className="w-6 h-6 text-white" />
         </button>
         <h1 className="text-[17px] font-medium text-white">Log into Instagram</h1>

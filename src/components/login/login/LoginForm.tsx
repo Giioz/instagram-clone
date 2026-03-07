@@ -16,12 +16,12 @@ export default function LoginForm() {
   } = useLoginForm();
 
   return (
-    <div className="flex h-[91vh]  ">
-      <div className="w-194.5 border-r-2 border-gray-300 bg-[#0B1014]">
+    <div className="flex flex-col md:flex-row h-[91vh] border-b-1 border-[#3D4F5C]">
+      <div className="w-full md:w-194.5 border-r-2 border-[#3D4F5C] bg-[#0B1014]">
         <LoginLeftSide />
       </div>
-      <div className="w-185 m-auto  ">
-        <div className="w-full max-w-md px-8">
+      <div className="w-full md:w-185 m-auto">
+        <div className="w-full px-8">
           {error && (
             <div className="mb-4 p-3 bg-red-500/20 border border-red-500 rounded-lg">
               <p className="text-red-400 text-sm">{error}</p>

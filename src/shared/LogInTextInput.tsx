@@ -22,7 +22,7 @@ export default function TextInput({
   className = "",
 }: TextInputProps) {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full max-w-[546px]">
       <input
         name={name}
         type={type}
@@ -30,7 +30,7 @@ export default function TextInput({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className={`w-136.5 h-15 px-4 py-3 rounded-2xl border border-[#445664] text-[#F1F4F7] focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors ${className}`}
+        className={`w-full h-15 px-4 py-3 rounded-2xl border border-[#445664] text-[#F1F4F7] focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors sm:max-w-[546px] ${className}`}
       />
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
     </div>

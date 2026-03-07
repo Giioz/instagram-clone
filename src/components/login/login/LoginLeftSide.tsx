@@ -2,8 +2,8 @@ import Image from "next/image";
 
 export default function LoginLeftSide() {
   return (
-    <div className="w-full h-full relative flex flex-col items-center justify-center">
-      <div className="absolute top-12 left-12">
+    <div className="w-full h-full relative flex flex-col items-center justify-center  ">
+      <div className="absolute top-12 left-12 hidden md:block">
         <Image
           src="/Instagram-Gradient-Logo-PNG.png"
           alt="Instagram"
@@ -12,7 +12,7 @@ export default function LoginLeftSide() {
         />
       </div>
 
-      <div className="flex flex-col items-center text-center text-white ml-7.5 mt-[18%]">
+      <div className="flex flex-col items-center text-center text-white ml-7.5 mt-[18%] hidden md:block">
         <h1 className="text-[36px] font-normal mb-3">
           See everyday moments from
         </h1>
@@ -32,6 +32,15 @@ export default function LoginLeftSide() {
             height={470}
           />
         </div>
+      </div>
+
+      <div className="flex items-center h-[144px] justify-center md:hidden">
+        <Image
+          src="/Instagram-Gradient-Logo-PNG.png"
+          alt="Instagram"
+          width={62}
+          height={62}
+        />
       </div>
     </div>
   );
