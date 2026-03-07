@@ -30,6 +30,12 @@ export function useRegisterForm() {
     e.preventDefault();
     setIsLoading(true);
     setError("");
+    if (!formData.month || !formData.day || !formData.year) {
+      setError("Please complete your birthday");
+      setIsLoading(false);
+      return;
+    }
+    const birthday = `${formData.year}-${formData.month.padStart(2, '0')}-${formData.day.padStart(2, '0')}`;
 
     try {
       const response = await fetch("/api/auth/register", {
@@ -42,6 +48,7 @@ export function useRegisterForm() {
           password: formData.password,
           name: formData.name,
           username: formData.username,
+          birthday,
         }),
       });
 
@@ -52,8 +59,6 @@ export function useRegisterForm() {
       }
 
       console.log("Registration successful:", data);
-      
-      // Redirect to login page after successful registration
       router.push("/login");
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -63,19 +68,19 @@ export function useRegisterForm() {
   };
 
   const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ].map((month) => ({ value: month, label: month }));
+    { value: "01", label: "January" },
+    { value: "02", label: "February" },
+    { value: "03", label: "March" },
+    { value: "04", label: "April" },
+    { value: "05", label: "May" },
+    { value: "06", label: "June" },
+    { value: "07", label: "July" },
+    { value: "08", label: "August" },
+    { value: "09", label: "September" },
+    { value: "10", label: "October" },
+    { value: "11", label: "November" },
+    { value: "12", label: "December" },
+  ];
 
   const days = Array.from({ length: 31 }, (_, i) => ({
     value: (i + 1).toString(),

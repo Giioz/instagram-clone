@@ -3,15 +3,19 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { prisma } from "@/src/library/db";
 
-const JWT_SECRET = process.env.JWT_SECRET || "change-this-in-production";
+const JWT_SECRET = process.env.JWT_SECRET || "instagram-clone-production-secret-key-2025";
 
 export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json();
 
     if (!email || !password) {
+      const errors: { email?: string; password?: string } = {};
+      if (!email) errors.email = "Email is required";
+      if (!password) errors.password = "Password is required";
+      
       return NextResponse.json(
-        { error: "Email and password are required" },
+        { errors },
         { status: 400 }
       );
     }
@@ -22,7 +26,7 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json(
-        { error: "Invalid credentials" },
+        { errors: { email: "Invalid credentials" } },
         { status: 401 }
       );
     }
@@ -31,7 +35,7 @@ export async function POST(request: NextRequest) {
 
     if (!isPasswordValid) {
       return NextResponse.json(
-        { error: "Invalid credentials" },
+        { errors: { password: "Invalid credentials" } },
         { status: 401 }
       );
     }

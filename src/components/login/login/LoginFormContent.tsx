@@ -9,6 +9,10 @@ interface LoginFormContentProps {
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (e: React.FormEvent) => void;
   isLoading: boolean;
+  fieldErrors: {
+    email?: string;
+    password?: string;
+  };
 }
 
 export default function LoginFormContent({
@@ -16,6 +20,7 @@ export default function LoginFormContent({
   handleChange,
   handleSubmit,
   isLoading,
+  fieldErrors,
 }: LoginFormContentProps) {
   return (
     <div className="w-full ml-12 ">
@@ -27,6 +32,7 @@ export default function LoginFormContent({
           value={formData.email}
           onChange={handleChange}
           required
+          error={fieldErrors.email}
         />
 
         <LogInTextInput
@@ -36,6 +42,7 @@ export default function LoginFormContent({
           value={formData.password}
           onChange={handleChange}
           required
+          error={fieldErrors.password}
         />
 
         <button

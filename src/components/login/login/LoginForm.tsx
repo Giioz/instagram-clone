@@ -6,7 +6,7 @@ import LoginFormContent from "./LoginFormContent";
 import LoginLeftSide from "./LoginLeftSide";
 
 export default function LoginForm() {
-  const { formData, isLoading, error, handleChange, handleSubmit } =
+  const { formData, isLoading, error, fieldErrors, handleChange, handleSubmit } =
     useLoginForm();
 
   return (
@@ -31,6 +31,7 @@ export default function LoginForm() {
             handleChange={handleChange}
             handleSubmit={handleSubmit}
             isLoading={isLoading}
+            fieldErrors={fieldErrors}
           />
         </div>
       </div>
