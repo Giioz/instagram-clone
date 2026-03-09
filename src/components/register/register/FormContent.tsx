@@ -35,7 +35,7 @@ export default function FormContent({
 }: FormContentProps) {
   return (
     <form className="space-y-5 w-full" onSubmit={handleSubmit}>
-      <label className="text-[17px] font-semibold mb-1.25 block">
+        <label className="text-[17px] font-medium mb-1.25 block leading-[22px]">
         Mobile number or email
       </label>
       <TextInput
@@ -53,7 +53,7 @@ export default function FormContent({
         </Link>
       </p>
 
-      <label className="text-[17px] font-semibold mb-1.25 block">
+        <label className="text-[17px] font-medium mb-1.25 block leading-[22px]">
         Password
       </label>
       <TextInput
@@ -67,7 +67,7 @@ export default function FormContent({
 
       {/* Birthday */}
       <div>
-        <label className="text-[17px] font-semibold mb-1.25 block">
+        <label className="text-[17px] font-medium mb-1.25 block leading-[22px]">
           Birthday
         </label>
 
@@ -104,7 +104,7 @@ export default function FormContent({
         </div>
       </div>
 
-      <label className="text-[17px] font-semibold mb-1.25 block">Name</label>
+        <label className="text-[17px] font-medium mb-1.25 block leading-[22px]">Name</label>
       <TextInput
         name="name"
         type="text"
@@ -113,8 +113,7 @@ export default function FormContent({
         onChange={handleChange}
         required
       />
-
-      <label className="text-[17px] font-semibold mb-1.25 block">
+      <label className="text-[17px] font-medium mb-1.25 block leading-[22px]">
         Username
       </label>
       <TextInput

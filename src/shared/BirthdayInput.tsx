@@ -22,9 +22,15 @@ export default function SelectInput({
     <select
       name={name}
       required={required}
-      className={`w-43.75 h-15 bg-[rgb(68, 86, 100)] border border-[rgb(68, 86, 100)] rounded-2xl px-4 py-3`}
       value={value}
       onChange={onChange}
+      className="
+        w-full h-12
+        md:w-43.75 md:h-15
+        border border-[#445664]
+        rounded-2xl
+        px-4 py-3
+      "
     >
       {placeholder && <option value="">{placeholder}</option>}
       {options.map((option) => (
