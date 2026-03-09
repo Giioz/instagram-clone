@@ -40,20 +40,20 @@ export const useLoginStore = create<LoginStore>((set, get) => ({
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
     if (!email) {
-      set(state => ({
+      set((state: LoginStore) => ({
         errors: { ...state.errors, email: 'Email is required' }
       }));
       return false;
     }
     
     if (!emailRegex.test(email)) {
-      set(state => ({
+      set((state: LoginStore) => ({
         errors: { ...state.errors, email: 'Please enter a valid email address' }
       }));
       return false;
     }
     
-    set(state => ({
+    set((state: LoginStore) => ({
       errors: { ...state.errors, email: undefined }
     }));
     return true;
@@ -63,13 +63,13 @@ export const useLoginStore = create<LoginStore>((set, get) => ({
     const { password } = get();
     
     if (!password) {
-      set(state => ({
+      set((state: LoginStore) => ({
         errors: { ...state.errors, password: 'Password is required' }
       }));
       return false;
     }
     
-    set(state => ({
+    set((state: LoginStore) => ({
       errors: { ...state.errors, password: undefined }
     }));
     return true;

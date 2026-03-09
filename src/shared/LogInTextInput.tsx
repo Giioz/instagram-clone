@@ -21,18 +21,16 @@ export default function TextInput({
   error,
   className = "",
 }: TextInputProps) {
-  const newLocal =
-    "w-[546px] h-[60px] bg-[rgb(68, 86, 100)] border-[1px] border-[rgb(68, 86, 100)] rounded-[16px]";
   return (
-    <div>
+    <div className="flex flex-col w-full max-w-[546px]">
       <input
         name={name}
         type={type}
         required={required}
-        className={newLocal + " px-4 py-3 " + className}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        className={`w-full h-15 px-4 py-3 rounded-2xl border border-[#445664] text-[#F1F4F7] focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors sm:max-w-[546px] ${className}`}
       />
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
     </div>
