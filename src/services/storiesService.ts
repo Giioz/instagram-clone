@@ -52,5 +52,20 @@ export const storiesService = {
       reader.onerror = () => reject(new Error('Failed to read file'));
       reader.readAsDataURL(file);
     });
+  },
+
+  async deleteStory(storyId: number): Promise<void> {
+    try {
+      const response = await fetch(`/api/stories?id=${storyId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete story');
+      }
+    } catch (error) {
+      console.error('Error deleting story:', error);
+      throw error;
+    }
   }
 };

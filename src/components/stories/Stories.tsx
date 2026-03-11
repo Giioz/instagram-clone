@@ -7,19 +7,21 @@ import { Navigation } from "swiper/modules";
 import { useStories } from "@/src/hooks/useStories";
 import StoryUploadModal from "./StoryUploadModal";
 import StoryItem from "./StoryItem";
+import StoryViewer from "./StoryViewer";
+import StoryCircle from "@/src/shared/StoryCircle";
 
 export default function Stories() {
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const { stories, loading, uploading, handleUpload } = useStories();
+  const [selectedUserIndex, setSelectedUserIndex] = useState<number | null>(null);
+  const { groupedStories, loading, uploading, handleUpload } = useStories();
 
   if (loading) {
     return (
-      <div className="flex gap-4 p-4 bg-gray-900 rounded-lg">
+      <div className="flex gap-4 p-4 rounded-lg">
         {[...Array(5)].map((_, i) => (
-          <div
-            key={i}
-            className="w-16 h-16 bg-gray-800 rounded-full animate-pulse"
-          />
+          <StoryCircle className="animate-pulse" key={i}>
+            <div className="w-full h-full bg-gray-800 rounded-full"></div>
+          </StoryCircle>
         ))}
       </div>
     );
@@ -27,10 +29,11 @@ export default function Stories() {
 
   return (
     <>
-      <div className="bg-gray-900 rounded-lg p-4 mb-6 relative">
+    
+      <div className="rounded-lg mb-6 relative">
         <Swiper
           modules={[Navigation]}
-          spaceBetween={16}
+          spaceBetween={7.5}
           slidesPerView={6}
           navigation={{
             nextEl: ".swiper-button-next",
@@ -38,19 +41,26 @@ export default function Stories() {
           }}
         >
           <SwiperSlide>
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-0.5">
               <button
                 onClick={() => setShowUploadModal(true)}
-                className="w-16 h-16 bg-linear-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center hover:opacity-90 transition"
+                className="flex items-center justify-center hover:opacity-90 transition"
               >
-                <Plus size={24} className="text-white" />
+                <StoryCircle>
+                  <div className="w-full h-full bg-gray-900 rounded-full flex items-center justify-center">
+                    <Plus size={24} className="text-white" />
+                  </div>
+                </StoryCircle>
               </button>
-              <span className="text-xs text-gray-300">Your story</span>
+              <span className="text-[12px] text-gray-300">Your story</span>
             </div>
           </SwiperSlide>
-          {stories.map((story) => (
-            <SwiperSlide key={story.id}>
-              <StoryItem story={story} />
+          {groupedStories.map((groupedStory, index) => (
+            <SwiperSlide key={groupedStory.user.id}>
+              <StoryItem 
+                groupedStory={groupedStory} 
+                onClick={() => setSelectedUserIndex(index)}
+              />
             </SwiperSlide>
           ))}
         </Swiper>
@@ -64,6 +74,14 @@ export default function Stories() {
         onUpload={handleUpload}
         uploading={uploading}
       />
+      {selectedUserIndex !== null && (
+        <StoryViewer
+          allGroupedStories={groupedStories}
+          currentUserIndex={selectedUserIndex}
+          isOpen={selectedUserIndex !== null}
+          onClose={() => setSelectedUserIndex(null)}
+        />
+      )}
     </>
   );
 }

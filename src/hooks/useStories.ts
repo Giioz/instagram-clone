@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { storiesService } from '@/src/services/storiesService';
 import type { Story, User } from '@prisma/client';
 
@@ -8,43 +8,71 @@ interface StoryWithUser extends Story {
   user: User;
 }
 
-export function useStories() {
-  const [stories, setStories] = useState<StoryWithUser[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [uploading, setUploading] = useState(false);
+interface GroupedStories {
+  user: User;
+  stories: Story[];
+}
 
-  useEffect(() => {
-    const loadStories = async () => {
-      const data = await storiesService.fetchStories();
-      setStories(data);
-      setLoading(false);
-    };
-    
-    loadStories();
+const groupStories = (stories: StoryWithUser[]): GroupedStories[] => {
+  const grouped = stories.reduce((acc: GroupedStories[], story) => {
+    const existingUser = acc.find(item => item.user.id === story.user.id);
+    if (existingUser) {
+      existingUser.stories.push(story);
+    } else {
+      acc.push({
+        user: story.user,
+        stories: [story]
+      });
+    }
+    return acc;
   }, []);
 
-  const handleUpload = async (file: File) => {
-    setUploading(true);
-    try {
-      await storiesService.uploadStory(file);
+  grouped.forEach(group => {
+    group.stories.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  });
+  
+  return grouped;
+};
+
+export function useStories() {
+  const queryClient = useQueryClient();
+
+  const { data: groupedStories = [], isLoading: loading } = useQuery({
+    queryKey: ['stories'],
+    queryFn: async () => {
       const data = await storiesService.fetchStories();
-      setStories(data);
-    } catch (error) {
-      console.error('Error uploading story:', error);
-      throw error;
-    } finally {
-      setUploading(false);
-    }
+      return groupStories(data);
+    },
+  });
+
+  const uploadMutation = useMutation({
+    mutationFn: (file: File) => storiesService.uploadStory(file),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['stories'] });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (storyId: number) => storiesService.deleteStory(storyId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['stories'] });
+    },
+  });
+
+  const handleUpload = async (file: File) => {
+    return uploadMutation.mutateAsync(file);
+  };
+
+  const handleDelete = async (storyId: number) => {
+    return deleteMutation.mutateAsync(storyId);
   };
 
   return {
-    stories,
+    groupedStories,
     loading,
-    uploading,
+    uploading: uploadMutation.isPending,
     handleUpload,
-    refreshStories: async () => {
-      const data = await storiesService.fetchStories();
-      setStories(data);
-    }
+    handleDelete,
+    refreshStories: () => queryClient.invalidateQueries({ queryKey: ['stories'] }),
   };
 }

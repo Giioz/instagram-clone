@@ -2,29 +2,57 @@ import type { Story, User } from "@prisma/client";
 import Image from "next/image";
 import StoryCircle from "@/src/shared/StoryCircle";
 
-interface StoryWithUser extends Story {
+interface GroupedStories {
   user: User;
+  stories: Story[];
 }
 
 interface StoryItemProps {
-  story: StoryWithUser;
+  groupedStory: GroupedStories;
+  onClick: () => void;
 }
 
-export default function StoryItem({ story }: StoryItemProps) {
+export default function StoryItem({ groupedStory, onClick }: StoryItemProps) {
+  const { user, stories } = groupedStory;
+  const hasMultipleStories = stories.length > 1;
+  const latestStory = stories[0]; 
+
   return (
     <div className="flex flex-col items-center gap-0.5">
-      <StoryCircle>
-        <div className="relative w-full h-full">
-          <Image
-            src={story.mediaUrl}
-            alt={`${story.user.username}'s story`}
-            fill
-            className="rounded-full object-cover border-2 border-black"
-          />
-        </div>
-      </StoryCircle>
+      <button onClick={onClick} className="relative group">
+        <StoryCircle>
+          <div className="relative w-full h-full">
+            {hasMultipleStories && (
+              <div className="absolute inset-0 rounded-full overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 opacity-80"></div>
+                <div className="absolute inset-0.5 bg-gray-900 rounded-full overflow-hidden">
+                  <Image
+                    src={latestStory.mediaUrl}
+                    alt={`${user.username}'s story`}
+                    fill
+                    className="rounded-full object-cover border-2 border-black"
+                  />
+                </div>
+              </div>
+            )}
+            {!hasMultipleStories && (
+              <Image
+                src={latestStory.mediaUrl}
+                alt={`${user.username}'s story`}
+                fill
+                className="rounded-full object-cover border-2 border-black"
+              />
+            )}
+          </div>
+        </StoryCircle>
+        {hasMultipleStories && (
+          <div className="absolute -bottom-1 -right-1 bg-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold">
+            {stories.length}
+          </div>
+        )}
+      </button>
       <span className="text-[12px] text-gray-300 truncate max-w-15">
-        {story.user.username}
+        {user.username}
       </span>
     </div>
   );
