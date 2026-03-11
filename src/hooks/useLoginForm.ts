@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
 import { useLoginStore } from "../store/loginStore";
 
 export function useLoginForm() {
@@ -7,7 +8,6 @@ export function useLoginForm() {
     email,
     password,
     errors: fieldErrors,
-    isLoading,
     setEmail,
     setPassword,
     validateEmail,
@@ -19,6 +19,40 @@ export function useLoginForm() {
 
   const [error, setError] = useState("");
   const router = useRouter();
+
+  const loginMutation = useMutation({
+    mutationFn: async (loginData: { email: string; password: string }) => {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.errors) {
+          useLoginStore.setState({ errors: data.errors });
+          throw new Error("Validation errors");
+        }
+        throw new Error(data.error || "Login failed");
+      }
+
+      return data;
+    },
+    onSuccess: (data) => {
+      console.log("Login successful:", data);
+      router.push("/");
+    },
+    onError: (err) => {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    },
+    onSettled: () => {
+      setLoading(false);
+    },
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -43,36 +77,7 @@ export function useLoginForm() {
     setLoading(true);
     setError("");
 
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        if (data.errors) {
-          useLoginStore.setState({ errors: data.errors });
-          return;
-        }
-        throw new Error(data.error || "Login failed");
-      }
-
-      console.log("Login successful:", data);
-
-      router.push("/");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setLoading(false);
-    }
+    loginMutation.mutate({ email, password });
   };
 
   return {
@@ -81,7 +86,7 @@ export function useLoginForm() {
       if (data.email !== undefined) setEmail(data.email);
       if (data.password !== undefined) setPassword(data.password);
     },
-    isLoading,
+    isLoading: loginMutation.isPending,
     error,
     fieldErrors,
     handleChange,
