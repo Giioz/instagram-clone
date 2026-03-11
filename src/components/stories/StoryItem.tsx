@@ -45,11 +45,6 @@ export default function StoryItem({ groupedStory, onClick }: StoryItemProps) {
             )}
           </div>
         </StoryCircle>
-        {hasMultipleStories && (
-          <div className="absolute -bottom-1 -right-1 bg-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold">
-            {stories.length}
-          </div>
-        )}
       </button>
       <span className="text-[12px] text-gray-300 truncate max-w-15">
         {user.username}
