@@ -36,6 +36,8 @@ export default function StoryItem({ groupedStory, onClick }: StoryItemProps) {
               </div>
             )}
             {!hasMultipleStories && (
+
+              
               <Image
                 src={latestStory.mediaUrl}
                 alt={`${user.username}'s story`}
