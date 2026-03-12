@@ -5,16 +5,20 @@ interface UserPreviewProps {
   user: User;
   stories: Story[];
   position: "left" | "right";
+  onClick?: () => void;
 }
 
-export default function UserPreview({ user, stories, position }: UserPreviewProps) {
+export default function UserPreview({ user, stories, position, onClick }: UserPreviewProps) {
   if (!stories[0]?.mediaUrl) return null;
 
   return (
     <div 
       className={`absolute ${position === "left" ? "left-0" : "right-0"} top-0 bottom-0 w-[50%] flex items-center justify-center opacity-90`}
     >
-      <div className="relative w-[173px] h-[308px] rounded-lg overflow-hidden shadow-lg">
+      <div 
+        className="relative w-[173px] h-[308px] rounded-lg overflow-hidden shadow-lg cursor-pointer hover:opacity-100 transition-all duration-300 ease-in-out transform hover:scale-105"
+        onClick={onClick}
+      >
         <Image
           src={stories[0].mediaUrl}
           alt={`${user.username}'s story`}

@@ -147,6 +147,11 @@ export default function StoryViewer({
           user={groupedStories[currentUserIdx - 1].user}
           stories={groupedStories[currentUserIdx - 1].stories}
           position="left"
+          onClick={() => {
+            setCurrentUserIdx(currentUserIdx - 1);
+            setCurrentStoryIndex(0);
+            setProgress(0);
+          }}
         />
       )}
       {currentUserIdx < groupedStories.length - 1 && (
@@ -154,9 +159,14 @@ export default function StoryViewer({
           user={groupedStories[currentUserIdx + 1].user}
           stories={groupedStories[currentUserIdx + 1].stories}
           position="right"
+          onClick={() => {
+            setCurrentUserIdx(currentUserIdx + 1);
+            setCurrentStoryIndex(0);
+            setProgress(0);
+          }}
         />
       )}
-      <div className="relative w-[399px] max-w-full h-[709.328px] flex flex-col bg-gray-900 rounded-lg overflow-hidden text-base font-sans select-none">
+      <div className="relative w-[399px] max-w-full h-[709.328px] flex flex-col bg-gray-900 rounded-lg overflow-hidden text-base font-sans select-none transition-all duration-300 ease-in-out">
         <StoryHeader
           currentUser={currentUser.user}
           currentStory={currentStory}
