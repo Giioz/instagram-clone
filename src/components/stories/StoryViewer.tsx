@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import type { Story, User } from "@prisma/client";
 import { useAuth } from "@/src/hooks/useAuth";
 import { useStories } from "@/src/hooks/useStories";
@@ -73,7 +72,13 @@ export default function StoryViewer({
     }, 100);
 
     return () => clearInterval(interval);
-  }, [currentStoryIndex, currentUserIdx, stories.length, groupedStories.length, isOpen]);
+  }, [
+    currentStoryIndex,
+    currentUserIdx,
+    stories.length,
+    groupedStories.length,
+    isOpen,
+  ]);
 
   useEffect(() => {
     if (progress === 100) {
@@ -150,7 +155,6 @@ export default function StoryViewer({
           onClick={() => {
             setCurrentUserIdx(currentUserIdx - 1);
             setCurrentStoryIndex(0);
-            setProgress(0);
           }}
         />
       )}
@@ -166,7 +170,7 @@ export default function StoryViewer({
           }}
         />
       )}
-      <div className="relative w-[399px] max-w-full h-[709.328px] flex flex-col bg-gray-900 rounded-lg overflow-hidden text-base font-sans select-none transition-all duration-300 ease-in-out">
+      <div className="relative w-99.75 max-w-full h-[709.328px] flex flex-col bg-gray-900 rounded-lg overflow-hidden text-base font-sans select-none transition-all duration-300 ease-in-out">
         <StoryHeader
           currentUser={currentUser.user}
           currentStory={currentStory}
@@ -188,7 +192,10 @@ export default function StoryViewer({
           onPrevious={handlePreviousUserOrStory}
           onNext={handleNextUserOrStory}
           disabledPrevious={currentStoryIndex === 0 && currentUserIdx === 0}
-          disabledNext={currentStoryIndex === stories.length - 1 && currentUserIdx === groupedStories.length - 1}
+          disabledNext={
+            currentStoryIndex === stories.length - 1 &&
+            currentUserIdx === groupedStories.length - 1
+          }
         />
 
         <StoryActions currentUser={currentUser.user} />

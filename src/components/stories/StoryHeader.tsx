@@ -42,7 +42,7 @@ export default function StoryHeader({
   };
 
   return (
-    <div className="absolute top-0 left-0 right-0 z-10 p-4 bg-gradient-to-b from-black/70 to-transparent">
+    <div className="absolute top-0 left-0 right-0 z-10 p-4 bg-linear-to-b from-black/70 to-transparent">
       <div className="flex gap-1 mb-3">
         {stories.map((_, index) => (
           <div

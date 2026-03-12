@@ -23,7 +23,7 @@ export default function UserPreview({
       } top-0 bottom-0 w-[50%] flex items-center justify-center opacity-90`}
     >
       <div
-        className="relative w-[173px] h-[308px] rounded-lg overflow-hidden shadow-lg cursor-pointer hover:opacity-100 transition-all duration-300 ease-in-out transform hover:scale-105"
+        className="relative w-43.25 h-77 rounded-lg overflow-hidden shadow-lg cursor-pointer hover:opacity-100 transition-all duration-300 ease-in-out transform hover:scale-105"
         onClick={onClick}
       >
         <Image
