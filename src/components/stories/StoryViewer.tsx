@@ -41,7 +41,7 @@ export default function StoryViewer({
   }, [allGroupedStories]);
 
   const currentUser = groupedStories[currentUserIdx];
-  const stories = currentUser?.stories || [];
+  const stories = currentUser?.stories.slice().reverse() || [];
 
   useEffect(() => {
     setCurrentUserIdx(currentUserIndex);
