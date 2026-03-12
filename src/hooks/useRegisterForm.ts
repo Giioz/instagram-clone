@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
 
 export function useRegisterForm() {
   const [formData, setFormData] = useState({
@@ -13,9 +14,41 @@ export function useRegisterForm() {
   });
 
   const [usernameError, setUsernameError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+
+  const registerMutation = useMutation({
+    mutationFn: async (registerData: {
+      email: string;
+      password: string;
+      name: string;
+      username: string;
+      birthday: string;
+    }) => {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(registerData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Registration failed");
+      }
+
+      return data;
+    },
+    onSuccess: (data) => {
+      console.log("Registration successful:", data);
+      router.push("/login");
+    },
+    onError: (err) => {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    },
+  });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -28,43 +61,22 @@ export function useRegisterForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     setError("");
+    
     if (!formData.month || !formData.day || !formData.year) {
       setError("Please complete your birthday");
-      setIsLoading(false);
       return;
     }
+    
     const birthday = `${formData.year}-${formData.month.padStart(2, '0')}-${formData.day.padStart(2, '0')}`;
 
-    try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-          name: formData.name,
-          username: formData.username,
-          birthday,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Registration failed");
-      }
-
-      console.log("Registration successful:", data);
-      router.push("/login");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setIsLoading(false);
-    }
+    registerMutation.mutate({
+      email: formData.email,
+      password: formData.password,
+      name: formData.name,
+      username: formData.username,
+      birthday,
+    });
   };
 
   const months = [
@@ -99,7 +111,7 @@ export function useRegisterForm() {
     setFormData,
     usernameError,
     setUsernameError,
-    isLoading,
+    isLoading: registerMutation.isPending,
     error,
     handleChange,
     handleSubmit,
