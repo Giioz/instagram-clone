@@ -146,14 +146,14 @@ export default function StoryViewer({
         <UserPreview
           user={groupedStories[currentUserIdx - 1].user}
           stories={groupedStories[currentUserIdx - 1].stories}
-          position="right"
+          position="left"
         />
       )}
       {currentUserIdx < groupedStories.length - 1 && (
         <UserPreview
           user={groupedStories[currentUserIdx + 1].user}
           stories={groupedStories[currentUserIdx + 1].stories}
-          position="left"
+          position="right"
         />
       )}
       <div className="relative w-[399px] max-w-full h-[709.328px] flex flex-col bg-gray-900 rounded-lg overflow-hidden text-base font-sans select-none">
