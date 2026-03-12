@@ -26,9 +26,9 @@ export default function StoryHeader({
   const getTimeAgo = (date: Date) => {
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-    
+
     if (diffInSeconds < 60) {
-      return 'just now';
+      return "just now";
     } else if (diffInSeconds < 3600) {
       const minutes = Math.floor(diffInSeconds / 60);
       return `${minutes}m ago`;
@@ -43,9 +43,12 @@ export default function StoryHeader({
 
   return (
     <div className="absolute top-0 left-0 right-0 z-10 p-4 bg-gradient-to-b from-black/70 to-transparent">
-       <div className="flex gap-1 mb-3">
+      <div className="flex gap-1 mb-3">
         {stories.map((_, index) => (
-          <div key={index} className="flex-1 h-1 bg-white/30 rounded-full overflow-hidden">
+          <div
+            key={index}
+            className="flex-1 h-1 bg-white/30 rounded-full overflow-hidden"
+          >
             <div
               className="h-full bg-white transition-all duration-100"
               style={{
@@ -62,7 +65,7 @@ export default function StoryHeader({
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 p-0.5">
+          <div className="w-10 h-10 rounded-full bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)] p-0.5">
             <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center">
               <span className="text-white text-sm font-semibold">
                 {currentUser?.username?.charAt(0)?.toUpperCase() || ""}
@@ -70,7 +73,9 @@ export default function StoryHeader({
             </div>
           </div>
           <div>
-            <p className="text-white font-semibold">{currentUser?.username || ""}</p>
+            <p className="text-white font-semibold">
+              {currentUser?.username || ""}
+            </p>
           </div>
           <p className="text-gray-300 text-sm">
             {getTimeAgo(new Date(currentStory.createdAt))}
@@ -79,20 +84,21 @@ export default function StoryHeader({
 
         <div className="flex items-center gap-2">
           {user && parseInt(user.userId) === currentStory.userId && (
-            <button 
+            <button
               onClick={onDeleteStory}
               className="text-white hover:bg-white/20 rounded-full p-2 transition"
             >
               <Trash2 size={20} />
             </button>
           )}
-          <button onClick={onClose} className="text-white hover:bg-white/20 rounded-full p-2 transition">
+          <button
+            onClick={onClose}
+            className="text-white hover:bg-white/20 rounded-full p-2 transition"
+          >
             <X size={24} />
           </button>
         </div>
       </div>
-
-     
     </div>
   );
 }

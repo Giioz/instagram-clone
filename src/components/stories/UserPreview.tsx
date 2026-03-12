@@ -8,14 +8,21 @@ interface UserPreviewProps {
   onClick?: () => void;
 }
 
-export default function UserPreview({ user, stories, position, onClick }: UserPreviewProps) {
+export default function UserPreview({
+  user,
+  stories,
+  position,
+  onClick,
+}: UserPreviewProps) {
   if (!stories[0]?.mediaUrl) return null;
 
   return (
-    <div 
-      className={`absolute ${position === "left" ? "left-0" : "right-0"} top-0 bottom-0 w-[50%] flex items-center justify-center opacity-90`}
+    <div
+      className={`absolute ${
+        position === "left" ? "left-0" : "right-0"
+      } top-0 bottom-0 w-[50%] flex items-center justify-center opacity-90`}
     >
-      <div 
+      <div
         className="relative w-[173px] h-[308px] rounded-lg overflow-hidden shadow-lg cursor-pointer hover:opacity-100 transition-all duration-300 ease-in-out transform hover:scale-105"
         onClick={onClick}
       >
@@ -26,7 +33,7 @@ export default function UserPreview({ user, stories, position, onClick }: UserPr
           className="object-cover"
         />
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 p-0.5 mb-2">
+          <div className="w-16 h-16 rounded-full bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)] p-0.5 mb-2">
             <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center">
               <span className="text-white text-lg font-semibold">
                 {user?.username?.charAt(0)?.toUpperCase() || ""}
