@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { storiesService } from '@/src/services/storiesService';
+import { storiesService } from '@/src/modules/stories/services/storiesService';
 import type { Story, User } from '@prisma/client';
 
 interface StoryWithUser extends Story {
