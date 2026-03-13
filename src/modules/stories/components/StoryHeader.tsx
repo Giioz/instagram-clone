@@ -1,6 +1,6 @@
 import { X, Trash2 } from "lucide-react";
 import type { User, Story } from "@prisma/client";
-import type { JWTPayload } from "@/src/library/auth";
+import type { JWTPayload } from "@/src/modules/common/lib/auth";
 
 interface StoryHeaderProps {
   currentUser: User;

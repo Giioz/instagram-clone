@@ -1,6 +1,6 @@
 import type { Story, User } from "@prisma/client";
 import Image from "next/image";
-import StoryCircle from "@/src/shared/StoryCircle";
+import StoryCircle from "@/src/modules/common/components/StoryCircle";
 
 interface GroupedStories {
   user: User;

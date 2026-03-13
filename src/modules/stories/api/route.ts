@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "@/src/library/auth";
-import { prisma } from "@/src/library/db";
-import { saveFile, getFileFromRequest } from "@/src/library/fileUpload";
+import { verifyToken } from "@/src/modules/common/lib/auth";
+import { prisma } from "@/src/modules/common/lib/db";
+import { saveFile, getFileFromRequest } from "@/src/modules/common/lib/fileUpload";
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
       data: {
         userId: parseInt(payload.userId),
         mediaUrl,
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours from now
       },
       include: {
         user: {
