@@ -60,7 +60,7 @@ export function useStories() {
   });
 
   const handleUpload = async (file: File) => {
-    return uploadMutation.mutateAsync(file);
+    await uploadMutation.mutateAsync(file);
   };
 
   const handleDelete = async (storyId: number) => {
