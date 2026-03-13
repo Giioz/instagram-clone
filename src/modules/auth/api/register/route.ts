@@ -1,16 +1,35 @@
-import { NextRequest, NextResponse } from "next/server";
-
+import { Hono } from 'hono';
 import bcrypt from "bcryptjs";
 import { prisma } from "@/src/modules/common/lib/db";
 
-export async function POST(request: NextRequest) {
+const app = new Hono();
+
+app.post('/api/auth/register', async (c) => {
   try {
-    const { email, password, name, username, birthday } = await request.json();
+    console.log("Registration request received");
+    
+    const body = await c.req.text();
+    console.log("Request body:", body);
+    
+    if (!body) {
+      console.log("Empty request body");
+      return c.json({ error: "Request body is empty" }, 400);
+    }
+    
+    let registerData;
+    try {
+      registerData = JSON.parse(body);
+    } catch (parseError) {
+      console.log("JSON parse error:", parseError);
+      return c.json({ error: "Invalid JSON format" }, 400);
+    }
+    
+    const { email, password, name, username, birthday } = registerData;
 
     if (!email || !password || !name || !username || !birthday) {
-      return NextResponse.json(
+      return c.json(
         { error: "All fields are required" },
-        { status: 400 }
+        400
       );
     }
 
@@ -21,9 +40,9 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingUser) {
-      return NextResponse.json(
+      return c.json(
         { error: "User with this email or username already exists" },
-        { status: 409 }
+        409
       );
     }
 
@@ -39,18 +58,23 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json(
+    return c.json(
       {
         message: "User created successfully",
         user
       },
-      { status: 201 }
+      201
     );
   } catch (error) {
     console.error("Registration error:", error);
-    return NextResponse.json(
+    if (error instanceof SyntaxError && error.message.includes('JSON')) {
+      return c.json({ error: "Invalid JSON format" }, 400);
+    }
+    return c.json(
       { error: "Internal server error" },
-      { status: 500 }
+      500
     );
   }
-}
+});
+
+export default app;
