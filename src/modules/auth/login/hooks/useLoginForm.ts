@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
-import { useLoginStore } from "../store/loginStore";
+import { useLoginStore } from "../../../../store/loginStore";
 
 export function useLoginForm() {
   const {

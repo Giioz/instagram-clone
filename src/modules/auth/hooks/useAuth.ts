@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import type { JWTPayload } from '@/src/modules/common/lib/auth';
+import type { JWTPayload } from '@/src/lib/auth';
 
 export function useAuth() {
   const { data: user, isLoading: loading, error } = useQuery({
