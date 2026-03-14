@@ -28,6 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0C0F14]`}
+        suppressHydrationWarning={true}
       >
         <QueryProvider>
           {children}
