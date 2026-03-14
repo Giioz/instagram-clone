@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-import SubmitButton from "@/src/modules/common/components/SubmitButton";
-import HaveAccountButton from "@/src/modules/common/components/HaveAccountButton";
+import SubmitButton from "@/src/modules/auth/register/components/common/RegisterPageSubmitButton";
+import HaveAccountButton from "@/src/modules/auth/register/components/common/HaveAccountButton";
 
 interface RegisterPageTextAndButton {
   isLoading: boolean;

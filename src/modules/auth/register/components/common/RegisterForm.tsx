@@ -1,8 +1,8 @@
 "use client";
 
-import { useRegisterForm } from "@/src/hooks/useRegisterForm";
+import { useRegisterForm } from "@/src/modules/auth/register/hooks/useRegisterForm";
 import Link from "next/link";
-import FormContent from "./FormContent";
+import FormContent from "../sections/FormContent";
 
 export default function RegisterForm() {
   const {

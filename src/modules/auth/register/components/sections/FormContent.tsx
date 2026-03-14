@@ -1,8 +1,9 @@
 
-import TextInput from "@/src/modules/common/components/TextInput";
-import LegalTextAndButton from "./RegisterPageTextAndButton";
+import FormInputs from "@/src/modules/auth/components/FormInputs";
+import LegalTextAndButton from "../common/RegisterPageTextAndButton";
 import Link from "next/link";
-import BirthdayInput from "@/src/modules/common/components/BirthdayInput";
+import BirthdayInput from "@/src/modules/auth/register/components/common/BirthdayInput";
+import TextInput from "@/src/modules/auth/components/FormInputs";
 interface FormContentProps {
   formData: {
     email: string;
@@ -39,7 +40,7 @@ export default function FormContent({
         <label className="text-[17px] font-medium mb-1.25 block leading-[22px]">
         Mobile number or email
       </label>
-      <TextInput
+      <FormInputs
         name="email"
         type="text"
         placeholder="Mobile number or email"
@@ -57,7 +58,7 @@ export default function FormContent({
         <label className="text-[17px] font-medium mb-1.25 block leading-[22px]">
         Password
       </label>
-      <TextInput
+      <FormInputs
         name="password"
         type="password"
         placeholder="Password"
@@ -106,7 +107,7 @@ export default function FormContent({
       </div>
 
         <label className="text-[17px] font-medium mb-1.25 block leading-[22px]">Name</label>
-      <TextInput
+      <FormInputs
         name="name"
         type="text"
         placeholder="Name"
@@ -117,7 +118,7 @@ export default function FormContent({
       <label className="text-[17px] font-medium mb-1.25 block leading-[22px]">
         Username
       </label>
-      <TextInput
+      <FormInputs
         name="username"
         type="text"
         placeholder="Username"
