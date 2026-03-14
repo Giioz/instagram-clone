@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import app from "@/src/modules/auth/api/login/route";
+import app from "@/src/modules/auth/login/server/routes/post.route";
 
 export async function POST(request: NextRequest) {
   const url = new URL(request.url);

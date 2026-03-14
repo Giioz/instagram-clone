@@ -1,5 +1,5 @@
 import Sidebar from "../components/layout/Sidebar";
-import Stories from "../modules/stories/components/Stories";
+import Stories from "../modules/stories/components/sections/Stories";
 
 
 export default function Home() {
