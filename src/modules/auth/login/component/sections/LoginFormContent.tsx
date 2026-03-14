@@ -1,7 +1,7 @@
 
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import LogInTextInput from "@/src/modules/common/components/LogInTextInput";
+import LogInTextInput from "@/src/modules/auth/login/component/common/LogInTextInput";
 
 interface LoginFormContentProps {
   formData: {

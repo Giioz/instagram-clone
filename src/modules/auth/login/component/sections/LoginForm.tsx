@@ -1,6 +1,6 @@
 "use client";
 
-import { useLoginForm } from "@/src/hooks/useLoginForm";
+import { useLoginForm } from "@/src/modules/auth/login/hooks/useLoginForm";
 
 import LoginFormContent from "./LoginFormContent";
 import LoginLeftSide from "./LoginLeftSide";
