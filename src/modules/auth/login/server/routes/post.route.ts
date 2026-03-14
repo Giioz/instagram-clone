@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { prisma } from '@/src/modules/common/lib/db';
+import { prisma } from '@/src/lib/db';
 
 const app = new Hono();
 const JWT_SECRET = process.env.JWT_SECRET || "instagram-clone-production-secret-key-2025";
