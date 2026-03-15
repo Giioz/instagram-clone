@@ -8,7 +8,7 @@ interface StoryCircleProps {
 
 export default function StoryCircle({ children, className = "", seen = false }: StoryCircleProps) {
   const backgroundStyle = seen 
-    ? { background: '#dbdbdb' } 
+    ? { background: '#2B3036' } 
     : {
         background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)'
       };
