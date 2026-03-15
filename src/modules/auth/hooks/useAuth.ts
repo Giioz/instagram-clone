@@ -5,7 +5,7 @@ import type { JWTPayload } from '@/src/lib/auth';
 
 export function useAuth() {
   const { data: user, isLoading: loading, error } = useQuery({
-    queryKey: ['auth', 'user'],
+    queryKey: ['user'],
     queryFn: async () => {
       const response = await fetch('/api/auth/me');
       if (!response.ok) {
