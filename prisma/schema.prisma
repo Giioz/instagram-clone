@@ -24,6 +24,7 @@ model User {
   posts       Post[]
   savedPosts  SavePost[]
   storyLikes  StoryLike[]
+  storySeens  StorySeen[]
 }
 
 model Story {
@@ -35,6 +36,7 @@ model Story {
   updatedAt DateTime   @updatedAt
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   likes     StoryLike[]
+  seens     StorySeen[]
 }
 
 model StoryLike {
@@ -43,6 +45,17 @@ model StoryLike {
   storyId   Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  story     Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, storyId])
+}
+
+model StorySeen {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  storyId   Int
+  createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   story     Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
 
