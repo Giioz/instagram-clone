@@ -1,6 +1,7 @@
 import { X, Trash2 } from "lucide-react";
 import type { User, Story } from "@prisma/client";
 import type { JWTPayload } from "@/src/lib/auth";
+import { useTimeAgo } from "@/src/modules/stories/hooks/useTimeAgo";
 
 interface StoryHeaderProps {
   currentUser: User;
@@ -23,23 +24,7 @@ export default function StoryHeader({
   onClose,
   onDeleteStory,
 }: StoryHeaderProps) {
-  const getTimeAgo = (date: Date) => {
-    const now = new Date();
-    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-    if (diffInSeconds < 60) {
-      return "just now";
-    } else if (diffInSeconds < 3600) {
-      const minutes = Math.floor(diffInSeconds / 60);
-      return `${minutes}m ago`;
-    } else if (diffInSeconds < 86400) {
-      const hours = Math.floor(diffInSeconds / 3600);
-      return `${hours}h ago`;
-    } else {
-      const days = Math.floor(diffInSeconds / 86400);
-      return `${days}d ago`;
-    }
-  };
+  const { getTimeAgo } = useTimeAgo();
 
   return (
     <div className="absolute top-0 left-0 right-0 z-10 p-4 bg-linear-to-b from-black/70 to-transparent max-md:p-6">
