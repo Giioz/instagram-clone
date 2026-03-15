@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import { useStories } from "@/src/modules/stories/hooks/useStories";
+import { useAuth } from "@/src/modules/auth/hooks/useAuth";
 import StoryUploadModal from "../common/StoryUploadModal";
 import StoryItem from "../common/StoryItem";
 import StoryViewer from "./StoryViewer";
@@ -14,6 +15,7 @@ export default function Stories() {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [selectedUserIndex, setSelectedUserIndex] = useState<number | null>(null);
   const { groupedStories, loading, uploading, handleUpload } = useStories();
+  const { user: currentUser } = useAuth();
 
   if (loading) {
     return (
@@ -60,6 +62,7 @@ export default function Stories() {
               <StoryItem 
                 groupedStory={groupedStory} 
                 onClick={() => setSelectedUserIndex(index)}
+                currentUser={currentUser}
               />
             </SwiperSlide>
           ))}
