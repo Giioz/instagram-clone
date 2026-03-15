@@ -14,9 +14,23 @@ export function useStoryUpload(onUpload: (mediaUrl: string) => Promise<void>) {
 
   const handleUpload = async () => {
     if (!selectedFile) return;
-    const mediaUrl = URL.createObjectURL(selectedFile);
-    await onUpload(mediaUrl);
-    setSelectedFile(null);
+    
+    try {
+      const reader = new FileReader();
+      const base64Promise = new Promise<string>((resolve, reject) => {
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(selectedFile);
+      });
+      
+      const mediaUrl = await base64Promise;
+      
+      await onUpload(mediaUrl);
+      setSelectedFile(null);
+    } catch (error) {
+      console.error('Upload error:', error);
+      throw error;
+    }
   };
 
   const reset = () => {
