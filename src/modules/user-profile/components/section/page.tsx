@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { verifyTokenString } from "@/src/lib/auth";
+
 import type { JWTPayload } from "@/src/lib/auth";
 import { cookies } from "next/headers";
 import { getUserProfile, ProfileHeader, ProfilePosts } from "@/src/modules/user-profile";
@@ -47,4 +47,8 @@ export default async function ProfilePage({
       </div>
     </div>
   );
+}
+
+function verifyTokenString(token: string): JWTPayload | null {
+  throw new Error("Function not implemented.");
 }
