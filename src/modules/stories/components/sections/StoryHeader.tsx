@@ -1,4 +1,5 @@
 import { X, Trash2, MoreHorizontal } from "lucide-react";
+import Link from "next/link";
 import type { User, Story } from "@prisma/client";
 import type { JWTPayload } from "@/src/lib/auth";
 import { useTimeAgo } from "@/src/modules/stories/hooks/useTimeAgo";
@@ -55,16 +56,19 @@ export default function StoryHeader({
         ))}
       </div>
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 max-md:gap-4">
-          <div className="w-[32px] h-[32px] rounded-full bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)] p-0.5 max-md:w-12 max-md:h-12">
+        <div className="flex items-center gap-3 max-md:gap-4">
+          <Link 
+            href={`/profile/${currentUser?.username || ""}`}
+            className="w-10 h-10 rounded-full bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)] p-0.5 max-md:w-12 max-md:h-12 hover:opacity-80 transition cursor-pointer"
+          >
             <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center">
               <span className="text-white text-sm font-semibold max-md:text-base">
                 {currentUser?.username?.charAt(0)?.toUpperCase() || ""}
               </span>
             </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <p className="text-white font-semibold text-[14px] ">
+          </Link>
+          <div>
+            <p className="text-white font-semibold max-md:text-lg">
               {currentUser?.username || ""}
             </p>
 
