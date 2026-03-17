@@ -28,3 +28,17 @@ export function verifyToken(request: NextRequest): JWTPayload | null {
 export function createToken(payload: JWTPayload): string {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" });
 }
+
+export function verifyTokenString(token: string): JWTPayload | null {
+  try {
+    if (!token) {
+      return null;
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload;
+    return decoded;
+  } catch (error) {
+    console.error("Token verification error:", error);
+    return null;
+  }
+}

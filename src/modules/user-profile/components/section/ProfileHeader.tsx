@@ -3,6 +3,8 @@ import { useFollowStats } from "@/src/modules/follow/hooks/queries/useFollowStat
 import FollowButton from "@/src/modules/follow/components/FollowButton";
 import MessageButton from "@/src/modules/messages/components/common/MessageButton";
 import { useCurrentUser } from "@/src/modules/auth/hooks/useCurrentUser";
+import { useProfileStories } from "@/src/modules/user-profile/hooks/useProfileStories";
+import StoryViewer from "@/src/modules/stories/components/sections/StoryViewer";
 import type { UserProfile } from "@/src/modules/user-profile/types";
 
 interface ProfileHeaderProps {
@@ -12,19 +14,25 @@ interface ProfileHeaderProps {
 export default function ProfileHeader({ user }: ProfileHeaderProps) {
   const { data: currentUser } = useCurrentUser();
   const { data: followStats, isLoading } = useFollowStats(user.id.toString());
+  const { selectedUserIndex, handleAvatarClick, handleCloseStoryViewer, groupedStories } = useProfileStories({ user });
 
   return (
     <div className="w-full flex justify-center mb-12">
       <div className="max-w-3xl w-full flex flex-col gap-6">
         <div className="flex items-center gap-8">
           <div className="flex-shrink-0">
-            <div className="w-[150px] h-[150px] rounded-full bg-[linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)] p-1">
-              <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center">
-                <span className="text-white text-4xl font-bold">
-                  {user.username.charAt(0).toUpperCase()}
-                </span>
+            <button 
+              onClick={handleAvatarClick}
+              className="relative group hover:opacity-90 transition-opacity"
+            >
+              <div className="w-[150px] h-[150px] rounded-full bg-[linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)] p-1">
+                <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center">
+                  <span className="text-white text-4xl font-bold">
+                    {user.username.charAt(0).toUpperCase()}
+                  </span>
+                </div>
               </div>
-            </div>
+            </button>
           </div>
           <div className="flex flex-col gap-4">
 
@@ -56,17 +64,38 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
         </div>
 
         <div className="flex gap-2">
-          <FollowButton
-            userId={user.id.toString()}
-            isFollowing={followStats?.isFollowing || false}
-            currentUser={currentUser}
-            profileUsername={user.username}
-          />
+          {user.isOwnProfile ? (
+            <>
+              <button className="w-[329.93px] h-[44px] bg-gray-700 text-white text-sm font-medium rounded-[12px] hover:bg-gray-600 transition">
+                Edit Profile
+              </button>
+              <button className="w-[329.93px] h-[44px] bg-gray-700 text-white text-sm font-medium rounded-[12px] hover:bg-gray-600 transition">
+                View Archive
+              </button>
+            </>
+          ) : (
+            <>
+              <FollowButton
+                userId={user.id.toString()}
+                isFollowing={followStats?.isFollowing || false}
+                currentUser={currentUser}
+                profileUsername={user.username}
+              />
 
-          <MessageButton />
+              <MessageButton />
+            </>
+          )}
         </div>
 
       </div>
+      {selectedUserIndex !== null && (
+        <StoryViewer
+          allGroupedStories={groupedStories}
+          currentUserIndex={selectedUserIndex}
+          isOpen={selectedUserIndex !== null}
+          onClose={handleCloseStoryViewer}
+        />
+      )}
     </div>
   );
 }
