@@ -4,6 +4,12 @@ import { prisma } from "@/src/lib/db";
 
 export async function GET(request: NextRequest) {
   try {
+    const payload = verifyToken(request);
+    
+    if (!payload) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { searchParams } = new URL(request.url);
     const storyId = searchParams.get('storyId');
 
