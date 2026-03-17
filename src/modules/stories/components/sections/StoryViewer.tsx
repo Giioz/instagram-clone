@@ -33,6 +33,8 @@ export default function StoryViewer({
     stories,
     currentStory,
     user,
+    isPaused,
+    setIsPaused,
     handlePreviousUserOrStory,
     handleNextUserOrStory,
     handleStoryClick,
@@ -83,6 +85,8 @@ export default function StoryViewer({
           user={user}
           onClose={onClose}
           onDeleteStory={handleDeleteStory}
+          isPaused={isPaused}
+          setIsPaused={setIsPaused}
         />
 
         <StoryContent
