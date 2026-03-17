@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getUserProfile } from "@/src/modules/user-profile/services/getUserProfile";
-import { verifyTokenString } from "@/src/lib/auth";
+import jwt from "jsonwebtoken";
 
 export async function GET(
   request: NextRequest,
@@ -35,3 +35,7 @@ export async function GET(
     );
   }
 }
+function verifyTokenString(token: string): any {
+  throw new Error("Function not implemented.");
+}
+

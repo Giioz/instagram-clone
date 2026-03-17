@@ -1,7 +1,7 @@
 "use client";
 import { useFollowStats } from "@/src/modules/follow/hooks/queries/useFollowStats";
 import FollowButton from "@/src/modules/follow/components/FollowButton";
-import MessageButton from "@/src/modules/follow/components/MessageButton";
+import MessageButton from "@/src/modules/messages/components/common/MessageButton";
 import { useCurrentUser } from "@/src/modules/auth/hooks/useCurrentUser";
 import type { UserProfile } from "@/src/modules/user-profile/types";
 
