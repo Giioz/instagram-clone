@@ -43,6 +43,11 @@ export function useStories() {
       const data = await storiesService.fetchStories();
       return groupStories(data);
     },
+    staleTime: 30000, 
+    gcTime: 300000, 
+    refetchOnWindowFocus: false, 
+    refetchOnMount: false, 
+    refetchOnReconnect: true, 
   });
 
   const uploadMutation = useMutation({
