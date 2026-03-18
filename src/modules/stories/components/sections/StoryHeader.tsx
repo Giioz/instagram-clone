@@ -110,12 +110,13 @@ export default function StoryHeader({
           )}
 
           {/* CLOSE */}
-          <button
+          {/* <button
             onClick={onClose}
             className="text-white hover:bg-white/20 rounded-full p-2 transition max-md:p-3"
           >
             <X size={22} className="max-md:size-7" />
-          </button>
+          </button> */}
+
         </div>
       </div>
     </div>
