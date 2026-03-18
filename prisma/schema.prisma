@@ -25,6 +25,8 @@ model User {
   savedPosts  SavePost[]
   storyLikes  StoryLike[]
   storySeens  StorySeen[]
+  following   Follow[]    @relation("FollowingRelation")
+  followers   Follow[]    @relation("FollowerRelation")
 }
 
 model Story {
@@ -88,4 +90,17 @@ model SavePost {
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@unique([userId, postId])
+}
+
+model Follow {
+  id          Int      @id @default(autoincrement())
+  followerId  Int
+  followingId Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  follower    User     @relation("FollowingRelation", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("FollowerRelation", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
 }

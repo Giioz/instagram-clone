@@ -1,5 +1,6 @@
 import { Heart, Send } from "lucide-react";
 import type { User, Story } from "@prisma/client";
+import type { JWTPayload } from "@/src/lib/auth";
 import { useStoryLikes } from "../../hooks/useStoryLikes";
 
 interface StoryLike {
@@ -17,11 +18,13 @@ interface StoryLike {
 interface StoryActionsProps {
   currentUser: User;
   currentStory: Story | null;
+  user: JWTPayload | null;
 }
 
 export default function StoryActions({
   currentUser,
   currentStory,
+  user,
 }: StoryActionsProps) {
   const { isLiked, isLoading, error, handleLike } = useStoryLikes(
     currentUser,
@@ -29,6 +32,10 @@ export default function StoryActions({
   );
 
   if (!currentStory) return null;
+
+  if (user && parseInt(user.userId) === currentStory.userId) {
+    return null;
+  }
 
   return (
     <div className="p-4 bg-gray-900 rounded-b-lg">
