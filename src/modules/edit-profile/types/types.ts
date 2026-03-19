@@ -5,10 +5,17 @@ export interface UserProfile {
   username: string;
   name: string;
   email: string;
-  bio: string | null;
-  website: string | null;
+  bio?: string | null;
+  website?: string | null;
   gender: Gender;
-  imageUrl: string | null;
+  imageUrl?: string | null;
   createdAt: string;
   updatedAt: string;
 }
+export interface ProfileUpdateData {
+  bio?: string | null;
+  website?: string | null;
+  gender?: Gender;
+  imageUrl?: string;
+}
+export type UpdateProfileResponse = UserProfile;
