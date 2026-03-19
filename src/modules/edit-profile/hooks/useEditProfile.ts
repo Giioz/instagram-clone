@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { UserProfile, Gender } from "../types/types";
+import React from "react";
+import { ProfilePhotoUploader } from "../components/common/ProfilePhotoUploader";
 
 const fetchProfile = async (): Promise<UserProfile> => {
   const response = await fetch("/api/profile");
@@ -42,6 +44,7 @@ export const useEditProfile = () => {
   const [gender, setGender] = useState<Gender>("PREFER_NOT_TO_SAY");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploadingProfilePhoto, setIsUploadingProfilePhoto] = useState(false);
 
   const maxBioLength = 150;
 
@@ -53,12 +56,13 @@ export const useEditProfile = () => {
     queryKey: ["profile"],
     queryFn: fetchProfile,
   });
+  
   useEffect(() => {
     if (profile) {
-      setBio(profile.bio || "");
-      setWebsite(profile.website || "");
+      setBio(profile.bio ?? "");
+      setWebsite(profile.website ?? "");
       setGender(profile.gender);
-      setImageUrl(profile.imageUrl);
+      setImageUrl(profile.imageUrl ?? null);
     }
   }, [profile]);
 
@@ -66,11 +70,12 @@ export const useEditProfile = () => {
     mutationFn: updateProfile,
     onSuccess: (updatedProfile) => {
       queryClient.setQueryData(["profile"], updatedProfile);
-      setBio(updatedProfile.bio || "");
-      setWebsite(updatedProfile.website || "");
-      setGender(updatedProfile.gender);
-      setImageUrl(updatedProfile.imageUrl);
+      setBio(updatedProfile.bio ?? "");
+      setWebsite(updatedProfile.website ?? "");
+      setGender(updatedProfile.gender as Gender);
+      setImageUrl(updatedProfile.imageUrl ?? null);
       setSelectedFile(null);
+      setIsUploadingProfilePhoto(false);
     },
   });
 
@@ -83,13 +88,29 @@ export const useEditProfile = () => {
     }
   };
 
+  const handleProfilePhotoUpload = async (uploadedUrl: string) => {
+    setIsUploadingProfilePhoto(true);
+    setImageUrl(uploadedUrl);
+    setSelectedFile(null);
+
+    if (profile) {
+      updateMutation.mutate({
+        bio: profile.bio ?? null,
+        website: profile.website ?? null,
+        gender: profile.gender,
+        imageUrl: uploadedUrl,
+      });
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!profile) return;
 
     let finalImageUrl = imageUrl;
-    if (selectedFile) {
+    if (selectedFile && !isUploadingProfilePhoto) {
+      // Fallback to base64 if UploadThing wasn't used
       const reader = new FileReader();
       const base64Promise = new Promise<string>((resolve, reject) => {
         reader.onload = () => resolve(reader.result as string);
@@ -116,13 +137,18 @@ export const useEditProfile = () => {
 
   const resetForm = () => {
     if (profile) {
-      setBio(profile.bio || "");
-      setWebsite(profile.website || "");
+      setBio(profile.bio ?? "");
+      setWebsite(profile.website ?? "");
       setGender(profile.gender);
-      setImageUrl(profile.imageUrl);
+      setImageUrl(profile.imageUrl ?? null);
       setSelectedFile(null);
     }
   };
+
+  const ProfilePhotoUploadButton = () => 
+    React.createElement(ProfilePhotoUploader, { 
+      onUpload: handleProfilePhotoUpload
+    });
 
   return {
     profile,
@@ -145,5 +171,7 @@ export const useEditProfile = () => {
     handleSubmit,
     hasChanges,
     resetForm,
+    ProfilePhotoUploadButton,
+    isUploadingProfilePhoto,
   };
 };

@@ -26,6 +26,8 @@ export default function ProfileEditForm() {
     handleImageChange,
     handleSubmit,
     hasChanges,
+    ProfilePhotoUploadButton,
+    isUploadingProfilePhoto,
   } = useEditProfile();
 
   return (
@@ -74,15 +76,12 @@ export default function ProfileEditForm() {
                 </p>
               </div>
             </div>
-            <label className="bg-[#4a5df9] text-white px-4 h-8 rounded-lg font-medium text-sm cursor-pointer flex items-center justify-center hover:opacity-90 transition">
-              Change photo
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="hidden"
-              />
-            </label>
+            <div className="flex items-center gap-2">
+              <ProfilePhotoUploadButton />
+            </div>
+            {isUploadingProfilePhoto && (
+              <p className="text-xs text-gray-400 mt-1 text-center">Uploading photo...</p>
+            )}
           </div>
 
           <WebsiteInput value={website} onChange={setWebsite} />
