@@ -1,4 +1,5 @@
 "use client";
+
 import { useFollowStats } from "@/src/modules/follow/hooks/queries/useFollowStats";
 import FollowButton from "@/src/modules/follow/components/FollowButton";
 import MessageButton from "@/src/modules/messages/components/common/MessageButton";
@@ -6,6 +7,7 @@ import { useCurrentUser } from "@/src/modules/auth/hooks/useCurrentUser";
 import { useProfileStories } from "@/src/modules/user-profile/hooks/useProfileStories";
 import StoryViewer from "@/src/modules/stories/components/sections/StoryViewer";
 import type { UserProfile } from "@/src/modules/user-profile/types";
+import Link from "next/link";
 
 interface ProfileHeaderProps {
   user: UserProfile;
@@ -20,12 +22,12 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
     <div className="w-full flex justify-center mb-12">
       <div className="max-w-3xl w-full flex flex-col gap-6">
         <div className="flex items-center gap-8">
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             <button 
               onClick={handleAvatarClick}
               className="relative group hover:opacity-90 transition-opacity"
             >
-              <div className="w-[150px] h-[150px] rounded-full bg-[linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)] p-1">
+              <div className="w-37.5 h-37.5 rounded-full bg-[linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)] p-1">
                 <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center">
                   <span className="text-white text-4xl font-bold">
                     {user.username.charAt(0).toUpperCase()}
@@ -66,10 +68,10 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
         <div className="flex gap-2">
           {user.isOwnProfile ? (
             <>
-              <button className="w-[329.93px] h-[44px] bg-gray-700 text-white text-sm font-medium rounded-[12px] hover:bg-gray-600 transition">
+               <Link href="/profile/edit" className="w-[329.93px] h-11 bg-gray-700 text-white text-sm font-medium rounded-xl hover:bg-gray-600 transition flex items-center justify-center">
                 Edit Profile
-              </button>
-              <button className="w-[329.93px] h-[44px] bg-gray-700 text-white text-sm font-medium rounded-[12px] hover:bg-gray-600 transition">
+              </Link>
+              <button className="w-[329.93px] h-11 bg-gray-700 text-white text-sm font-medium rounded-xl hover:bg-gray-600 transition">
                 View Archive
               </button>
             </>
