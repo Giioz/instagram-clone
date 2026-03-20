@@ -23,7 +23,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
       <div className="max-w-3xl w-full flex flex-col gap-6">
         <div className="flex items-center gap-8">
           <div className="shrink-0">
-            <button 
+            <button
               onClick={handleAvatarClick}
               className="relative group hover:opacity-90 transition-opacity"
             >
@@ -37,14 +37,16 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
             </button>
           </div>
           <div className="flex flex-col gap-4">
-
             <div className="flex flex-col gap-1">
               <h1 className="text-[24px] font-semibold">{user.username}</h1>
               <h2 className="text-[14px] font-semibold">{user.name}</h2>
             </div>
             <div className="flex gap-8 text-sm">
               <div>
-                <span className="text-[14px] font-semibold">{user._count.posts}</span> posts
+                <span className="text-[14px] font-semibold">
+                  {user._count.posts}
+                </span>{" "}
+                posts
               </div>
 
               <div>
@@ -61,14 +63,16 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                 following
               </div>
             </div>
-
           </div>
         </div>
 
         <div className="flex gap-2">
           {user.isOwnProfile ? (
             <>
-               <Link href="/profile/edit" className="w-[329.93px] h-11 bg-gray-700 text-white text-sm font-medium rounded-xl hover:bg-gray-600 transition flex items-center justify-center">
+              <Link
+                href="/profile/edit"
+                className="w-[329.93px] h-11 bg-gray-700 text-white text-sm font-medium rounded-xl hover:bg-gray-600 transition flex items-center justify-center"
+              >
                 Edit Profile
               </Link>
               <button className="w-[329.93px] h-11 bg-gray-700 text-white text-sm font-medium rounded-xl hover:bg-gray-600 transition">
@@ -80,6 +84,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
               <FollowButton
                 userId={user.id.toString()}
                 isFollowing={followStats?.isFollowing || false}
+                isFollowedBy={followStats?.isFollowedBy || false}
                 currentUser={currentUser}
                 profileUsername={user.username}
               />
@@ -88,7 +93,6 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
             </>
           )}
         </div>
-
       </div>
       {selectedUserIndex !== null && (
         <StoryViewer

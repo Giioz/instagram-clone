@@ -14,22 +14,35 @@ export async function getFollowStats(userId: string, currentUser?: JWTPayload | 
     ]);
 
     let isFollowing = false;
+    let isFollowedBy = false;
     if (currentUser && parseInt(currentUser.userId) !== targetUserId) {
-      const follow = await prisma.follow.findUnique({
-        where: {
-          followerId_followingId: {
-            followerId: parseInt(currentUser.userId),
-            followingId: targetUserId,
+      const [follow, reverseFollow] = await Promise.all([
+        prisma.follow.findUnique({
+          where: {
+            followerId_followingId: {
+              followerId: parseInt(currentUser.userId),
+              followingId: targetUserId,
+            },
           },
-        },
-      });
+        }),
+        prisma.follow.findUnique({
+          where: {
+            followerId_followingId: {
+              followerId: targetUserId,
+              followingId: parseInt(currentUser.userId),
+            },
+          },
+        }),
+      ]);
       isFollowing = !!follow;
+      isFollowedBy = !!reverseFollow;
     }
 
     return {
       followersCount,
       followingCount,
       isFollowing,
+      isFollowedBy,
     };
   } catch (error) {
     console.error("Error getting follow stats:", error);
