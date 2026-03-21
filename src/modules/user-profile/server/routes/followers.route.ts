@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken } from '@/src/lib/auth';
-import { getFollowers } from '../../services/follow-list.service';
+import { getFollowers } from '../../services/follow-list-service';
 
 export async function GET(
   request: NextRequest,
