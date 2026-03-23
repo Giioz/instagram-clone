@@ -4,6 +4,7 @@ import type { JWTPayload } from "@/src/lib/auth";
 interface FollowButtonProps {
   userId: string;
   isFollowing: boolean;
+  isFollowedBy: boolean;
   currentUser: JWTPayload | null | undefined;
   profileUsername: string;
 }
@@ -11,6 +12,7 @@ interface FollowButtonProps {
 export default function FollowButton({
   userId,
   isFollowing,
+  isFollowedBy,
   currentUser,
   profileUsername,
 }: FollowButtonProps) {
@@ -34,6 +36,11 @@ export default function FollowButton({
   if (!currentUser) {
     return null;
   }
+  const getButtonText = () => {
+    if (isFollowing) return "Following";
+    if (isFollowedBy && !isFollowing) return "Follow Back";
+    return "Follow";
+  };
 
   return (
     <button
@@ -47,9 +54,7 @@ export default function FollowButton({
     >
       {follow.isPending || unfollow.isPending
         ? "Loading..."
-        : isFollowing
-        ? "Unfollow"
-        : "Follow"}
+        : getButtonText()}
     </button>
   );
 }

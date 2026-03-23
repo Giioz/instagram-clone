@@ -1,11 +1,8 @@
-import Sidebar from "../components/layout/Sidebar";
-import Stories from "../modules/stories/components/sections/Stories";
-
+import Stories from "@/src/modules/stories/components/sections/Stories";
 
 export default function Home() {
   return (
     <div className="flex">
-      <Sidebar />
 
       <div className="flex-1 flex justify-center">
         <div className="flex gap-20  mx-auto p-5">

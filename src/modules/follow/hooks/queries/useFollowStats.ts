@@ -4,6 +4,7 @@ interface FollowStats {
   followersCount: number;
   followingCount: number;
   isFollowing: boolean;
+  isFollowedBy: boolean;
 }
 
 export function useFollowStats(userId: string) {

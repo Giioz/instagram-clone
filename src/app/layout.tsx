@@ -9,7 +9,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className="antialiased !bg-[#0B1014]"
+        className="antialiased bg-[#0B1014]!"
         suppressHydrationWarning
       >
         <QueryProvider>
