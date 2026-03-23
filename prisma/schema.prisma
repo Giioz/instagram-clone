@@ -38,6 +38,10 @@ model Story {
   user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   likes     StoryLike[]
   seens     StorySeen[]
+
+  @@index([expiresAt])
+  @@index([userId, createdAt])
+  @@index([createdAt])
 }
 
 model StoryLike {
