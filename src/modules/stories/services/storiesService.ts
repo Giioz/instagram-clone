@@ -19,15 +19,13 @@ export const storiesService = {
     }
   },
 
-  async createStory(mediaUrl: string): Promise<StoryWithUser> {
+  async createStory(file: File): Promise<StoryWithUser> {
+    const formData = new FormData();
+    formData.append('file', file);
+    
     const response = await fetch('/api/stories', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        mediaUrl,
-      }),
+      body: formData,
     });
 
     if (!response.ok) {
@@ -38,20 +36,7 @@ export const storiesService = {
   },
 
   async uploadStory(file: File): Promise<StoryWithUser> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        try {
-          const base64data = reader.result as string;
-          const story = await this.createStory(base64data);
-          resolve(story);
-        } catch (error) {
-          reject(error);
-        }
-      };
-      reader.onerror = () => reject(new Error('Failed to read file'));
-      reader.readAsDataURL(file);
-    });
+    return this.createStory(file);
   },
 
   async deleteStory(storyId: number): Promise<void> {

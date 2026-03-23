@@ -1,7 +1,8 @@
-import TextInput from "../../../shared/TextInput";
-import BirthdayInput from "../../../shared/BirthdayInput";
+
+import TextInput from "@/src/modules/common/components/TextInput";
 import LegalTextAndButton from "./RegisterPageTextAndButton";
 import Link from "next/link";
+import BirthdayInput from "@/src/modules/common/components/BirthdayInput";
 interface FormContentProps {
   formData: {
     email: string;

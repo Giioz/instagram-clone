@@ -8,7 +8,7 @@ import { useStories } from "@/src/hooks/useStories";
 import StoryUploadModal from "./StoryUploadModal";
 import StoryItem from "./StoryItem";
 import StoryViewer from "./StoryViewer";
-import StoryCircle from "@/src/shared/StoryCircle";
+import StoryCircle from "@/src/modules/common/components/StoryCircle";
 
 export default function Stories() {
   const [showUploadModal, setShowUploadModal] = useState(false);

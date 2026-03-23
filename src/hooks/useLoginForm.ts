@@ -10,8 +10,6 @@ export function useLoginForm() {
     errors: fieldErrors,
     setEmail,
     setPassword,
-    validateEmail,
-    validatePassword,
     validateForm,
     resetErrors,
     setLoading,

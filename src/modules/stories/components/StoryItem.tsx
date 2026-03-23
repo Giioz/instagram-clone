@@ -1,6 +1,6 @@
 import type { Story, User } from "@prisma/client";
 import Image from "next/image";
-import StoryCircle from "@/src/shared/StoryCircle";
+import StoryCircle from "@/src/modules/common/components/StoryCircle";
 
 interface GroupedStories {
   user: User;
@@ -15,7 +15,7 @@ interface StoryItemProps {
 export default function StoryItem({ groupedStory, onClick }: StoryItemProps) {
   const { user, stories } = groupedStory;
   const hasMultipleStories = stories.length > 1;
-  const latestStory = stories[0]; 
+  const latestStory = stories[0];
 
   return (
     <div className="flex flex-col items-center gap-0.5">
@@ -24,8 +24,8 @@ export default function StoryItem({ groupedStory, onClick }: StoryItemProps) {
           <div className="relative w-full h-full">
             {hasMultipleStories && (
               <div className="absolute inset-0 rounded-full overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 opacity-80"></div>
-                <div className="absolute inset-0.5 bg-gray-900 rounded-full overflow-hidden">
+                <div className="absolute inset-0 bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)]0"></div>
+                <div className="absolute inset-0 bg-gray-900 rounded-full overflow-hidden">
                   <Image
                     src={latestStory.mediaUrl}
                     alt={`${user.username}'s story`}

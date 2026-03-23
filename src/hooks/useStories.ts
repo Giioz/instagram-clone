@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { storiesService } from '@/src/services/storiesService';
+import { storiesService } from '@/src/modules/stories/services/storiesService';
 import type { Story, User } from '@prisma/client';
 
 interface StoryWithUser extends Story {
@@ -60,7 +60,7 @@ export function useStories() {
   });
 
   const handleUpload = async (file: File) => {
-    return uploadMutation.mutateAsync(file);
+    await uploadMutation.mutateAsync(file);
   };
 
   const handleDelete = async (storyId: number) => {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "@/src/library/auth";
+import { verifyToken } from "@/src/modules/common/lib/auth";
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(payload);
   } catch (error) {
-    console.error("Auth me error:", error);
+    console.error("Get current user error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
