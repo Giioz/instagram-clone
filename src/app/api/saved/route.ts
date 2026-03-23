@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "@/src/modules/common/lib/auth";
-import { prisma } from "@/src/modules/common/lib/db";
+import { verifyToken } from "@/src/lib/auth";
+import { prisma } from "@/src/lib/db";
 
 export async function GET(request: NextRequest) {
   try {

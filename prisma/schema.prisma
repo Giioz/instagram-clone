@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,39 +5,73 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
 model User {
-  id          Int         @id @default(autoincrement())
-  name        String
-  email       String      @unique
-  username    String      @unique
-  password    String
-  birthday    DateTime?
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  stories     Story[]
-  posts       Post[]
-  savedPosts  SavePost[]
+  id         Int         @id @default(autoincrement())
+  name       String
+  email      String      @unique
+  username   String      @unique
+  password   String
+  birthday   DateTime?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  bio        String?     @db.VarChar(150)
+  gender     Gender      @default(PREFER_NOT_TO_SAY)
+  imageUrl   String?
+  website    String?
+  posts      Post[]
+  savedPosts SavePost[]
+  stories    Story[]
+  storyLikes StoryLike[]
+  storySeens StorySeen[]
+  followers  Follow[]    @relation("UserFollowers")
+  following  Follow[]    @relation("UserFollowing")
 }
 
 model Story {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  mediaUrl  String
-  expiresAt DateTime @default(dbgenerated("(now() + interval '24 hours')"))
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model Post {
   id        Int         @id @default(autoincrement())
   userId    Int
-  content   String
-  imageUrl  String?
-  likes     Int         @default(0)
+  mediaUrl  String
+  expiresAt DateTime    @default(dbgenerated("(now() + '24:00:00'::interval)"))
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likes     StoryLike[]
+  seens     StorySeen[]
+}
+
+model StoryLike {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  storyId   Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  story     Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, storyId])
+}
+
+model StorySeen {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  storyId   Int
+  createdAt DateTime @default(now())
+  story     Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, storyId])
+}
+
+model Post {
+  id        Int        @id @default(autoincrement())
+  userId    Int
+  content   String
+  imageUrl  String?
+  likes     Int        @default(0)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   savedBy   SavePost[]
 }
 
@@ -53,8 +81,27 @@ model SavePost {
   postId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, postId])
+}
+
+model Follow {
+  id          Int      @id @default(autoincrement())
+  followerId  Int
+  followingId Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  follower    User     @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  CUSTOM
+  PREFER_NOT_TO_SAY
 }

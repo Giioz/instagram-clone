@@ -19,13 +19,13 @@ export const storiesService = {
     }
   },
 
-  async createStory(file: File): Promise<StoryWithUser> {
-    const formData = new FormData();
-    formData.append('file', file);
-    
+  async createStory(mediaUrl: string): Promise<StoryWithUser> {
     const response = await fetch('/api/stories', {
       method: 'POST',
-      body: formData,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ mediaUrl }),
     });
 
     if (!response.ok) {
@@ -35,8 +35,8 @@ export const storiesService = {
     return response.json();
   },
 
-  async uploadStory(file: File): Promise<StoryWithUser> {
-    return this.createStory(file);
+  async uploadStory(mediaUrl: string): Promise<StoryWithUser> {
+    return this.createStory(mediaUrl);
   },
 
   async deleteStory(storyId: number): Promise<void> {

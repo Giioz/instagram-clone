@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import app from "@/src/modules/auth/api/register/route";
+import app from "@/src/modules/auth/register/server/routes/post.route";
 
 export async function POST(request: NextRequest) {
   const url = new URL(request.url);
@@ -11,8 +11,6 @@ export async function POST(request: NextRequest) {
   } as RequestInit);
 
   const response = await app.fetch(honoRequest);
-  
-  // Convert Hono response to Next.js response
   const body = await response.text();
   const headers = new Headers(response.headers);
   
