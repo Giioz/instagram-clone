@@ -31,7 +31,7 @@ interface Post {
 
 interface PostItemProps {
   post: Post;
-  currentUser: User;
+  currentUser: User | null;
 }
 
 export default function PostItem({ post, currentUser }: PostItemProps) {
@@ -90,7 +90,7 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {currentUser.id !== post.user.id && (
+          {currentUser && currentUser.id !== post.user.id && (
             <button
               onClick={handleFollow}
               disabled={follow.isPending || unfollow.isPending}
