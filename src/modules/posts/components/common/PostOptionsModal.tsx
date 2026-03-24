@@ -1,7 +1,3 @@
-"use client";
-
-import React from "react";
-
 interface PostOptionsModalProps {
   isOpen: boolean;
   onClose: () => void;
