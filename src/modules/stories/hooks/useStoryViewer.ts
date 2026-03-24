@@ -27,6 +27,7 @@ export function useStoryViewer({
   const [currentUserIdx, setCurrentUserIdx] = useState(currentUserIndex);
   const [progress, setProgress] = useState(0);
   const [groupedStories, setGroupedStories] = useState(allGroupedStories);
+  const [isPaused, setIsPaused] = useState(false);
   const { user } = useAuth();
   const { handleDelete } = useStories();
 
@@ -44,7 +45,7 @@ export function useStoryViewer({
   }, [currentUserIndex]);
 
   useEffect(() => {
-    if (!isOpen || stories.length === 0) return;
+    if (!isOpen || stories.length === 0 || isPaused) return;
 
     const interval = setInterval(() => {
       setProgress((prev) => {
@@ -73,6 +74,7 @@ export function useStoryViewer({
     stories.length,
     groupedStories.length,
     isOpen,
+    isPaused,
   ]);
 
   useEffect(() => {
@@ -154,6 +156,8 @@ export function useStoryViewer({
     stories,
     currentStory: stories[currentStoryIndex],
     user,
+    isPaused,
+    setIsPaused,
     handlePreviousUserOrStory,
     handleNextUserOrStory,
     handleStoryClick,

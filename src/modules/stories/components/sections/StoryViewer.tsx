@@ -33,6 +33,8 @@ export default function StoryViewer({
     stories,
     currentStory,
     user,
+    isPaused,
+    setIsPaused,
     handlePreviousUserOrStory,
     handleNextUserOrStory,
     handleStoryClick,
@@ -83,6 +85,8 @@ export default function StoryViewer({
           user={user}
           onClose={onClose}
           onDeleteStory={handleDeleteStory}
+          isPaused={isPaused}
+          setIsPaused={setIsPaused}
         />
 
         <StoryContent
@@ -101,7 +105,7 @@ export default function StoryViewer({
           }
         />
 
-        <StoryActions currentUser={currentUser.user} currentStory={currentStory} />
+        <StoryActions currentUser={currentUser.user} currentStory={currentStory} user={user} />
       </div>
       <div className="hidden min-[801px]:flex absolute left-[calc(50%+200px)] top-0 bottom-0 items-center gap-10 p-10">
         {currentUserIdx < groupedStories.length - 1 && (
