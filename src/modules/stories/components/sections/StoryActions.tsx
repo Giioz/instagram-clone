@@ -1,6 +1,7 @@
 import { Heart, Send } from "lucide-react";
 import type { User, Story } from "@prisma/client";
-import { useStoryLikes } from "../../hooks/useStoryLikes";
+import { useStoryLikes } from "@/src/modules/likes/hooks/useStoryLikes";
+
 
 interface StoryLike {
   id: number;

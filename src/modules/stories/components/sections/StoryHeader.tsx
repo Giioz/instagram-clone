@@ -28,7 +28,7 @@ export default function StoryHeader({
   const { getTimeAgo } = useTimeAgo();
 
   return (
-    <div className="absolute top-0 left-0 right-0 z-10 p-4 bg-linear-to-b from-black/70 to-transparent max-md:p-6">
+    <div className="absolute top-0 left-0 right-0 z-10 p-4 max-md:p-6">
       <div className="flex gap-1 mb-3 max-md:mb-4">
         {stories.map((_, index) => (
           <div
