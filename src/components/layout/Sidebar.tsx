@@ -1,5 +1,6 @@
 "use client";
 
+import { CreatePostModal } from '@/src/modules/posts/components/common/CreatePostModal';
 import {
   Home,
   PlaySquare,
@@ -15,7 +16,7 @@ import {
   Video
 } from 'lucide-react';
 import { useState } from 'react';
-import { CreatePostModal } from '../../modules/posts/components/CreatePostModal';
+
 
 const mainItems = [
   { icon: Home, label: 'Home', active: true },

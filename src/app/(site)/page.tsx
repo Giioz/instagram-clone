@@ -1,7 +1,7 @@
 "use client";
 
 import Stories from "@/src/modules/stories/components/sections/Stories";
-import PostsFeed from "@/src/modules/posts/components/PostsFeed";
+import PostsFeed from "@/src/modules/posts/components/section/PostsFeed";
 
 export default function Home() {
   return (

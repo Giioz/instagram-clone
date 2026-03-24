@@ -3,10 +3,12 @@
 import { Heart, MessageCircle, Send } from "lucide-react";
 import SavePostButton from "@/src/modules/save-posts/components/common/SavePostButton";
 import { usePostLikes } from "@/src/modules/likes/hooks/usePostLikes";
-import { useRelativeTime } from "../hooks/useRelativeTime";
+import { useRelativeTime } from "../../hooks/useRelativeTime";
 import { useFollowMutation } from "@/src/modules/follow/hooks/mutations/useFollowMutation";
 import { User } from "@prisma/client";
 import Image from "next/image";
+import { useState } from "react";
+import PostOptionsModal from "./PostOptionsModal";
 
 interface Post {
   id: number;
@@ -41,6 +43,7 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
   );
   const { getRelativeTime } = useRelativeTime();
   const { follow, unfollow } = useFollowMutation();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   const handleFollow = async () => {
     if (post.isFollowing) {
@@ -48,6 +51,29 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
     } else {
       await follow.mutateAsync({ followingId: post.user.id.toString() });
     }
+  };
+
+  const handleUnfollowFromModal = () => {
+    if (post.isFollowing) {
+      unfollow.mutateAsync({ followingId: post.user.id.toString() });
+    }
+    setIsModalOpen(false);
+  };
+
+  const handleAddToFavorites = () => {
+    console.log("Add to favorites:", post.id);
+    setIsModalOpen(false);
+  };
+
+  const handleGoToPost = () => {
+    console.log("Go to post:", post.id);
+    setIsModalOpen(false);
+  };
+
+  const handleAboutAccount = () => {
+    console.log("About account:", post.user.username);
+    window.location.href = `/${post.user.username}`;
+    setIsModalOpen(false);
   };
   
   const getImageUrls = (imageUrl: string | null): string[] => {
@@ -109,7 +135,7 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
               )}
             </button>
           )}
-          <button>
+          <button onClick={() => setIsModalOpen(true)}>
             <svg fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6">
               <circle cx="12" cy="12" r="1.5" />
               <circle cx="6" cy="12" r="1.5" />
@@ -286,6 +312,17 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
           <span className="font-normal">{post.content}</span>
         </p>
       </div>
+      
+      <PostOptionsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onUnfollow={handleUnfollowFromModal}
+        onAddToFavorites={handleAddToFavorites}
+        onGoToPost={handleGoToPost}
+        onAboutAccount={handleAboutAccount}
+        showUnfollow={!!(currentUser && currentUser.id !== post.user.id && post.isFollowing)}
+        user={post.user}
+      />
     </div>
   );
 }

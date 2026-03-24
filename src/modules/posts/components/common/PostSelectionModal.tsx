@@ -1,8 +1,9 @@
 "use client";
 
 import { X } from "lucide-react";
-import { PostUploader } from "./PostUploader";
-import { usePostUpload } from "../hooks/usePostUpload";
+import { usePostUpload } from "../../hooks/usePostUpload";
+
+
 
 interface PostSelectionModalProps {
   isOpen: boolean;

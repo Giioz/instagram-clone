@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import PostItem from "./PostItem";
+import PostItem from "../common/PostItem";
 import type { JWTPayload } from "@/src/lib/auth";
 import type { User } from "@prisma/client";
 

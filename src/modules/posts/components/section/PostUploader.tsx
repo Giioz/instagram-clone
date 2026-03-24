@@ -1,7 +1,8 @@
 'use client';
 
+import { UploadButton } from '@/src/utils/uploadthing';
 import { useState } from 'react';
-import { UploadButton } from '../../../utils/uploadthing';
+
 
 interface PostUploaderProps {
   onUpload: (mediaUrl: string) => Promise<void>;
