@@ -26,6 +26,27 @@ export const ourFileRouter = {
       return { uploadedBy: metadata.userId, url: file.ufsUrl };
     }),
     
+  postUploader: f({
+    image: {
+      maxFileSize: "32MB",
+      maxFileCount: 10,
+    },
+    video: {
+      maxFileSize: "128MB",
+      maxFileCount: 1,
+    },
+  })
+    .middleware(async ({ req }) => {
+      const user = verifyToken(req);
+      if (!user) throw new UploadThingError("Unauthorized");
+      return { userId: user.userId };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log("Post upload complete for userId:", metadata.userId);
+      console.log("file url", file.ufsUrl);
+      return { uploadedBy: metadata.userId, url: file.ufsUrl };
+    }),
+    
   profilePhotoUploader: f({
     image: {
       maxFileSize: "8MB",
