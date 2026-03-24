@@ -113,6 +113,12 @@ export default function Sidebar() {
       <CreatePostModal 
         isOpen={showCreatePostModal}
         onClose={() => setShowCreatePostModal(false)}
+        onPostCreated={() => {
+          setShowCreatePostModal(false);
+          if ((window as any).refreshPosts) {
+            (window as any).refreshPosts();
+          }
+        }}
       />
 
     </div>
