@@ -23,6 +23,7 @@ model User {
   savedPosts SavePost[]
   stories    Story[]
   storyLikes StoryLike[]
+  postLikes  PostLike[]
   storySeens StorySeen[]
   followers  Follow[]    @relation("UserFollowers")
   following  Follow[]    @relation("UserFollowing")
@@ -73,9 +74,22 @@ model Post {
   updatedAt DateTime   @updatedAt
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   savedBy   SavePost[]
+  postLikes PostLike[]
 }
 
 model SavePost {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  postId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+}
+
+model PostLike {
   id        Int      @id @default(autoincrement())
   userId    Int
   postId    Int
