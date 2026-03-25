@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface UseCommentLikeProps {
   commentId: number;
@@ -6,66 +6,78 @@ interface UseCommentLikeProps {
   isInitiallyLiked?: boolean;
 }
 
+interface LikeStatus {
+  likeCount: number;
+  isLiked: boolean;
+}
+
+const fetchLikeStatus = async (commentId: number): Promise<LikeStatus> => {
+  const response = await fetch(`/api/comment/like?commentId=${commentId}`);
+  
+  if (!response.ok) {
+    throw new Error("Failed to fetch like status");
+  }
+  
+  return response.json();
+};
+
+const toggleLike = async (commentId: number): Promise<LikeStatus> => {
+  const response = await fetch("/api/comment/like", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ commentId }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to toggle like");
+  }
+
+  return response.json();
+};
+
 export function useCommentLike({ commentId, initialLikes = 0, isInitiallyLiked = false }: UseCommentLikeProps) {
-  const [likes, setLikes] = useState(initialLikes);
-  const [isLiked, setIsLiked] = useState(isInitiallyLiked);
-  const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
 
-  const fetchLikeStatus = useCallback(async () => {
-    try {
-      const response = await fetch(`/api/comment/like?commentId=${commentId}`);
-      if (response.ok) {
-        const data = await response.json();
-        setLikes(data.likeCount);
-        setIsLiked(data.isLiked);
+  const {
+    data: likeStatus = { likeCount: initialLikes, isLiked: isInitiallyLiked },
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["commentLike", commentId],
+    queryFn: () => fetchLikeStatus(commentId),
+    enabled: !!commentId,
+    initialData: { likeCount: initialLikes, isLiked: isInitiallyLiked },
+  });
+
+  const toggleLikeMutation = useMutation({
+    mutationFn: () => toggleLike(commentId),
+    onMutate: async () => {
+      const previousData = queryClient.getQueryData<LikeStatus>(["commentLike", commentId]);
+      
+      queryClient.setQueryData(["commentLike", commentId], (old: LikeStatus) => ({
+        likeCount: old.isLiked ? old.likeCount - 1 : old.likeCount + 1,
+        isLiked: !old.isLiked,
+      }));
+
+      return { previousData };
+    },
+    onError: (err, variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(["commentLike", commentId], context.previousData);
       }
-    } catch (error) {
-      console.error("Error fetching like status:", error);
-    }
-  }, [commentId]);
-
-  useEffect(() => {
-    fetchLikeStatus();
-  }, [fetchLikeStatus]);
-
-  const toggleLike = async () => {
-    if (isLoading) return;
-    const newIsLiked = !isLiked;
-    const newLikes = newIsLiked ? likes + 1 : likes - 1;
-    
-    setIsLiked(newIsLiked);
-    setLikes(newLikes);
-    setIsLoading(true);
-
-    try {
-      const response = await fetch("/api/comment/like", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ commentId }),
-      });
-
-      if (!response.ok) {
-        setIsLiked(isLiked);
-        setLikes(likes);
-        throw new Error("Failed to toggle like");
-      }
-
-      const data = await response.json();
-      setIsLiked(data.liked);
-      setLikes(data.likeCount);
-    } catch (error) {
-      console.error("Error toggling comment like:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["commentLike", commentId] });
+    },
+  });
 
   return {
-    likes,
-    isLiked,
-    isLoading,
-    toggleLike,
+    likes: likeStatus.likeCount,
+    isLiked: likeStatus.isLiked,
+    isLoading: isLoading || toggleLikeMutation.isPending,
+    toggleLike: toggleLikeMutation.mutate,
+    error,
   };
 }
