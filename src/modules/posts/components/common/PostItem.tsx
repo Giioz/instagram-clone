@@ -9,6 +9,8 @@ import { User } from "@prisma/client";
 import Image from "next/image";
 import { useState } from "react";
 import PostOptionsModal from "./PostOptionsModal";
+import CommentModal from "@/src/modules/comment/component/common/CommentModal";
+
 
 interface Post {
   id: number;
@@ -44,6 +46,7 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
   const { getRelativeTime } = useRelativeTime();
   const { follow, unfollow } = useFollowMutation();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
   
   const handleFollow = async () => {
     if (post.isFollowing) {
@@ -250,7 +253,7 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
               <div className="text-[16px] font-semibold ">{likes.length}</div>
             </div>
 
-            <button className="hover:text-gray-300 transition">
+            <button onClick={() => setIsCommentModalOpen(true)} className="hover:text-gray-300 transition">
               <svg
                 aria-label="Comment"
                 fill="none"
@@ -322,6 +325,12 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
         onAboutAccount={handleAboutAccount}
         showUnfollow={!!(currentUser && currentUser.id !== post.user.id && post.isFollowing)}
         user={post.user}
+      />
+      
+      <CommentModal
+        isOpen={isCommentModalOpen}
+        onClose={() => setIsCommentModalOpen(false)}
+        post={post}
       />
     </div>
   );
