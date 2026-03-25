@@ -10,50 +10,70 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { postId, content } = await request.json();
+    const { commentId } = await request.json();
 
-    if (!postId || !content?.trim()) {
+    if (!commentId) {
       return NextResponse.json(
-        { error: "Post ID and content are required" },
+        { error: "Comment ID is required" },
         { status: 400 }
       );
     }
-    const post = await prisma.post.findUnique({
-      where: { id: parseInt(postId) },
+
+    const result = await prisma.$transaction(async (tx) => {
+      const [comment, existingLike] = await Promise.all([
+        tx.comment.findUnique({
+          where: { id: parseInt(commentId) },
+        }),
+        tx.commentLike.findUnique({
+          where: {
+            userId_commentId: {
+              userId: parseInt(session.userId),
+              commentId: parseInt(commentId),
+            },
+          },
+        }),
+      ]);
+
+      if (!comment) {
+        throw new Error("Comment not found");
+      }
+
+      let liked: boolean;
+
+      if (existingLike) {
+        await tx.commentLike.delete({
+          where: {
+            userId_commentId: {
+              userId: parseInt(session.userId),
+              commentId: parseInt(commentId),
+            },
+          },
+        });
+        liked = false;
+      } else {
+        await tx.commentLike.create({
+          data: {
+            userId: parseInt(session.userId),
+            commentId: parseInt(commentId),
+          },
+        });
+        liked = true;
+      }
+      const likeCount = await tx.commentLike.count({
+        where: { commentId: parseInt(commentId) },
+      });
+
+      return { liked, likeCount };
     });
 
-    if (!post) {
-      return NextResponse.json({ error: "Post not found" }, { status: 404 });
-    }
-
-    const comment = await prisma.comment.create({
-      data: {
-        content: content.trim(),
-        postId: parseInt(postId),
-        userId: parseInt(session.userId),
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            username: true,
-            name: true,
-            imageUrl: true,
-          },
-        },
-        _count: {
-          select: {
-            likes: true,
-          },
-        },
-      },
-    });
-
-    return NextResponse.json(comment, { status: 201 });
+    return NextResponse.json(result);
   } catch (error) {
-    console.error("Error creating comment:", error);
+    console.error("Error toggling comment like:", error);
+    if (error instanceof Error && error.message === "Comment not found") {
+      return NextResponse.json({ error: "Comment not found" }, { status: 404 });
+    }
     return NextResponse.json(
-      { error: "Failed to create comment" },
+      { error: "Failed to toggle like" },
       { status: 500 }
     );
   }

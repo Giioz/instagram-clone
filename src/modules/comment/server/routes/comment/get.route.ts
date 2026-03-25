@@ -23,6 +23,11 @@ export async function GET(request: NextRequest) {
             imageUrl: true,
           },
         },
+        _count: {
+          select: {
+            likes: true,
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",

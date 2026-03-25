@@ -1,44 +1,55 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifyToken } from "@/src/lib/auth";
 import { prisma } from "@/src/lib/db";
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const postId = searchParams.get("postId");
+    const session = await verifyToken(request);
     
-    if (!postId) {
-      return NextResponse.json({ error: "Post ID is required" }, { status: 400 });
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const comments = await prisma.comment.findMany({
-      where: {
-        postId: parseInt(postId),
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            username: true,
-            name: true,
-            imageUrl: true,
-          },
-        },
-        _count: {
-          select: {
-            likes: true,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
+    const { searchParams } = new URL(request.url);
+    const commentId = searchParams.get("commentId");
+
+    if (!commentId) {
+      return NextResponse.json(
+        { error: "Comment ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const comment = await prisma.comment.findUnique({
+      where: { id: parseInt(commentId) },
     });
 
-    return NextResponse.json(comments);
+    if (!comment) {
+      return NextResponse.json({ error: "Comment not found" }, { status: 404 });
+    }
+
+    const [likeCount, userLike] = await Promise.all([
+      prisma.commentLike.count({
+        where: { commentId: parseInt(commentId) },
+      }),
+      prisma.commentLike.findUnique({
+        where: {
+          userId_commentId: {
+            userId: parseInt(session.userId),
+            commentId: parseInt(commentId),
+          },
+        },
+      }),
+    ]);
+
+    return NextResponse.json({
+      likeCount,
+      isLiked: !!userLike,
+    });
   } catch (error) {
-    console.error("Error fetching comments:", error);
+    console.error("Error fetching comment like status:", error);
     return NextResponse.json(
-      { error: "Failed to fetch comments" },
+      { error: "Failed to fetch like status" },
       { status: 500 }
     );
   }
