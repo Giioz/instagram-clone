@@ -9,11 +9,11 @@ export const useRelativeTime = () => {
     const diffInMonths = Math.floor(diffInDays / 30);
 
     if (diffInMinutes < 1) return "just now";
-    if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
-    if (diffInHours < 24) return `${diffInHours}h ago`;
-    if (diffInDays < 7) return `${diffInDays}d ago`;
-    if (diffInWeeks < 4) return `${diffInWeeks}w ago`;
-    return `${diffInMonths}mo ago`;
+    if (diffInMinutes < 60) return `${diffInMinutes}m`;
+    if (diffInHours < 24) return `${diffInHours}h `;
+    if (diffInDays < 7) return `${diffInDays}d`;
+    if (diffInWeeks < 4) return `${diffInWeeks}w `;
+    return `${diffInMonths}mo `;
   };
 
   return { getRelativeTime };

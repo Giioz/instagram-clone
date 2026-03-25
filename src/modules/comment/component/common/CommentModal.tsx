@@ -93,8 +93,8 @@ export default function CommentModal({ isOpen, onClose, post }: CommentModalProp
             </div>
           )}
         </div>
-        <div className="w-[500px] flex flex-col bg-white">
-          <div className="flex items-center justify-between p-4 rounded-[4px] border-b-[0.2px] border-gray-200">
+        <div className="w-[500px] flex flex-col bg-[#202328]">
+          <div className="flex items-center justify-between p-4  border-b-[1px] border-[#262626]">
             <div className="flex items-center gap-3">
               <div className="relative w-[32px] h-[32px]">
                 {post.user.imageUrl ? (
@@ -112,7 +112,7 @@ export default function CommentModal({ isOpen, onClose, post }: CommentModalProp
                   </div>
                 )}
               </div>
-              <span className="font-semibold text-black">{post.user.username}</span>
+              <span className="font-semibold ">{post.user.username}</span>
             </div>
             <button
               onClick={onClose}
@@ -132,8 +132,8 @@ export default function CommentModal({ isOpen, onClose, post }: CommentModalProp
                 <p className="text-gray-400 text-[14px] font-normal mt-1">Start the conversation.</p>
               </div>
             ) : (
-            <div className="bg-[#121212] p-4">
-              <div className="space-y-4">
+            <div className="bg-[#202328] ">
+              <div className="space-y-[12px]">
                 {comments.map((comment) => (
                   <CommentItem 
                     key={comment.id} 
@@ -151,7 +151,7 @@ export default function CommentModal({ isOpen, onClose, post }: CommentModalProp
               </div>
             )}
           </div>
-          <div className="border-t-[0.4px] border-[#202328] p-4">
+          <div className="border-t-[0.4px] border-[#2B3036] p-4">
             <div className="flex items-center gap-2">
               <input
                 type="text"
