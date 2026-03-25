@@ -34,7 +34,7 @@ export default function CommentModal({ isOpen, onClose, post }: CommentModalProp
     
     try {
       console.log("Posting comment:", commentText);
-      await addComment(commentText);
+      await addComment({ postId: post.id, content: commentText });
       setCommentText("");
       console.log("Comment posted successfully");
     } catch (error) {
@@ -147,7 +147,7 @@ export default function CommentModal({ isOpen, onClose, post }: CommentModalProp
             )}
             {error && (
               <div className="text-center py-4">
-                <p className="text-red-500 text-sm">{error}</p>
+                <p className="text-red-500 text-sm">{typeof error === 'string' ? error : 'An error occurred'}</p>
               </div>
             )}
           </div>
