@@ -27,7 +27,6 @@ export default function CommentItem({ comment, postAuthorUsername, onDelete }: C
   const { likes, isLiked, isLoading, toggleLike } = useCommentLike({
     commentId: comment.id,
     initialLikes: comment._count?.likes || 0,
-    isInitiallyLiked: false,
   });
 
   const canDelete = currentUser?.username === comment.user.username || currentUser?.username === postAuthorUsername;

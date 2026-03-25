@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 interface UseCommentLikeProps {
   commentId: number;
@@ -11,10 +11,32 @@ export function useCommentLike({ commentId, initialLikes = 0, isInitiallyLiked =
   const [isLiked, setIsLiked] = useState(isInitiallyLiked);
   const [isLoading, setIsLoading] = useState(false);
 
+  const fetchLikeStatus = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/comment/like?commentId=${commentId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setLikes(data.likeCount);
+        setIsLiked(data.isLiked);
+      }
+    } catch (error) {
+      console.error("Error fetching like status:", error);
+    }
+  }, [commentId]);
+
+  useEffect(() => {
+    fetchLikeStatus();
+  }, [fetchLikeStatus]);
+
   const toggleLike = async () => {
     if (isLoading) return;
-
+    const newIsLiked = !isLiked;
+    const newLikes = newIsLiked ? likes + 1 : likes - 1;
+    
+    setIsLiked(newIsLiked);
+    setLikes(newLikes);
     setIsLoading(true);
+
     try {
       const response = await fetch("/api/comment/like", {
         method: "POST",
@@ -25,18 +47,14 @@ export function useCommentLike({ commentId, initialLikes = 0, isInitiallyLiked =
       });
 
       if (!response.ok) {
+        setIsLiked(isLiked);
+        setLikes(likes);
         throw new Error("Failed to toggle like");
       }
 
       const data = await response.json();
-      
-      if (data.liked) {
-        setLikes(prev => prev + 1);
-        setIsLiked(true);
-      } else {
-        setLikes(prev => prev - 1);
-        setIsLiked(false);
-      }
+      setIsLiked(data.liked);
+      setLikes(data.likeCount);
     } catch (error) {
       console.error("Error toggling comment like:", error);
     } finally {
