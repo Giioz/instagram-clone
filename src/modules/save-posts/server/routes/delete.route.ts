@@ -14,7 +14,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url);
-    const postId = searchParams.get('postId');
+    const postId = searchParams.get("postId");
 
     if (!postId) {
       return NextResponse.json(
