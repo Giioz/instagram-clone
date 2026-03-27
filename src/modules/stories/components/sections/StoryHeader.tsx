@@ -34,8 +34,8 @@ export default function StoryHeader({
   const [isMuted, setIsMuted] = useState(false);
 
   return (
-    <div className="absolute top-0 left-0 right-0 z-10 p-4 bg-gradient-to-b from-black/70 to-transparent max-md:p-6">
-      <div className="flex gap-[1.5px] mb-3 mt-[16px] max-md:mb-4">
+    <div className="absolute top-0 left-0 right-0 z-10 p-4 max-md:p-6">
+      <div className="flex gap-1 mb-3 max-md:mb-4">
         {stories.map((_, index) => (
           <div
             key={index}

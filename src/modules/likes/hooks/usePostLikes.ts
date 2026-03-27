@@ -28,7 +28,6 @@ interface UsePostLikesProps {
   post: Post;
 }
 
-// API functions
 const fetchPostLikes = async (postId: number): Promise<PostLike[]> => {
   const response = await fetch(`/api/posts/like?postId=${postId}`);
   if (!response.ok) {
