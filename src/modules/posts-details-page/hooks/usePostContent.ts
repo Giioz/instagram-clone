@@ -50,7 +50,7 @@ export function usePostContent(post: Post, currentUser: User | null) {
     currentUser,
     comments,
     isLoading,
-    error,
+    error: error?.message || null,
     isLiked,
     likeLoading,
     handleLike,

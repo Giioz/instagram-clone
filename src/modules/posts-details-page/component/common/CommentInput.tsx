@@ -17,22 +17,6 @@ export default function CommentInput({
   return (
     <div className="px-4 py-3 h-[55.9872px]">
       <div className="flex items-center gap-3">
-        
-        <div className="w-8 h-8 rounded-full">
-          {currentUser?.imageUrl ? (
-            <Image
-              src={currentUser.imageUrl}
-              alt="me"
-              fill
-              className="rounded-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full bg-gray-600 rounded-full flex items-center justify-center text-xs">
-              {currentUser?.username?.[0] || "U"}
-            </div>
-          )}
-        </div>
-
         <input
           value={commentText}
           onChange={(e) => setCommentText(e.target.value)}
