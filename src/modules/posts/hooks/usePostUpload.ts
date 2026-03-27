@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import React from 'react';
-import { PostUploader } from '../components/PostUploader';
+import { PostUploader } from '../components/section/PostUploader';
+
 
 export function usePostUpload(onUpload: (mediaUrl: string) => Promise<void>) {
   const [isUploading, setIsUploading] = useState(false);
