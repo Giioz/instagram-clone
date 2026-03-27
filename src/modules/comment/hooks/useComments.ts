@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface Comment {
   id: number;
@@ -19,97 +19,81 @@ interface UseCommentsProps {
   postId: number;
 }
 
+const fetchComments = async (postId: number): Promise<Comment[]> => {
+  const response = await fetch(`/api/comment?postId=${postId}`);
+  
+  if (!response.ok) {
+    throw new Error("Failed to fetch comments");
+  }
+  
+  return response.json();
+};
+
+const addComment = async ({ postId, content }: { postId: number; content: string }): Promise<Comment> => {
+  const response = await fetch("/api/comment", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      postId,
+      content: content.trim(),
+    }),
+  });
+  
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || "Failed to add comment");
+  }
+  
+  return response.json();
+};
+
+const deleteComment = async (commentId: number): Promise<void> => {
+  const response = await fetch(`/api/comment?commentId=${commentId}`, {
+    method: "DELETE",
+  });
+  
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || "Failed to delete comment");
+  }
+};
+
 export function useComments({ postId }: UseCommentsProps) {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const fetchComments = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      
-      const response = await fetch(`/api/comment?postId=${postId}`);
-      
-      if (!response.ok) {
-        throw new Error("Failed to fetch comments");
-      }
-      
-      const data = await response.json();
-      setComments(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  const addComment = async (content: string) => {
-    try {
-      setError(null);
-      
-      console.log("Sending comment request:", { postId, content });
-      
-      const response = await fetch("/api/comment", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          postId,
-          content: content.trim(),
-        }),
-      });
-      
-      console.log("Response status:", response.status);
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("API error:", errorData);
-        throw new Error(errorData.error || "Failed to add comment");
-      }
-      
-      const newComment = await response.json();
-      console.log("New comment received:", newComment);
-      setComments(prev => [newComment, ...prev]);
-      
-      return newComment;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "An error occurred";
-      setError(errorMessage);
-      throw new Error(errorMessage);
-    }
-  };
-  const deleteComment = async (commentId: number) => {
-    try {
-      setError(null);
-      
-      const response = await fetch(`/api/comment?commentId=${commentId}`, {
-        method: "DELETE",
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to delete comment");
-      }
-      
-      setComments(prev => prev.filter(comment => comment.id !== commentId));
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "An error occurred";
-      setError(errorMessage);
-      throw new Error(errorMessage);
-    }
-  };
-  useEffect(() => {
-    if (postId) {
-      fetchComments();
-    }
-  }, [postId]);
+  const queryClient = useQueryClient();
+
+  const {
+    data: comments = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["comments", postId],
+    queryFn: () => fetchComments(postId),
+    enabled: !!postId,
+  });
+
+  const addCommentMutation = useMutation({
+    mutationFn: addComment,
+    onSuccess: (newComment) => {
+      queryClient.setQueryData(["comments", postId], (old: Comment[] = []) => [newComment, ...old]);
+    },
+  });
+
+  const deleteCommentMutation = useMutation({
+    mutationFn: deleteComment,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+    },
+  });
 
   return {
     comments,
     isLoading,
     error,
-    fetchComments,
-    addComment,
-    deleteComment,
+    addComment: addCommentMutation.mutateAsync,
+    deleteComment: deleteCommentMutation.mutateAsync,
+    isAddingComment: addCommentMutation.isPending,
+    isDeletingComment: deleteCommentMutation.isPending,
   };
 }

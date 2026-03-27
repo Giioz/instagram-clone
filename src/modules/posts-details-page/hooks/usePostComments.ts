@@ -1,32 +1,67 @@
-import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useComments } from "@/src/modules/comment/hooks/useComments";
 
 export function usePostComments(postId: number) {
-  const [selectedCommentId, setSelectedCommentId] = useState<number | null>(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const initializeModalState = () => {
+    const existingState = queryClient.getQueryData<{
+      selectedCommentId: number | null;
+      isDeleteModalOpen: boolean;
+    }>(["postCommentModal", postId]);
+    
+    if (!existingState) {
+      queryClient.setQueryData(["postCommentModal", postId], {
+        selectedCommentId: null,
+        isDeleteModalOpen: false,
+      });
+    }
+    return existingState || { selectedCommentId: null, isDeleteModalOpen: false };
+  };
+
+  const { data: modalState } = useQuery({
+    queryKey: ["postCommentModal", postId],
+    queryFn: initializeModalState,
+    initialData: { selectedCommentId: null, isDeleteModalOpen: false },
+    staleTime: Infinity,
+  });
+
+  const { selectedCommentId, isDeleteModalOpen } = modalState;
   
   const { comments, isLoading, error, addComment, deleteComment } = useComments({ postId });
 
+  const updateModalState = (updates: Partial<{ selectedCommentId: number | null; isDeleteModalOpen: boolean }>) => {
+    queryClient.setQueryData(["postCommentModal", postId], (old: any) => ({
+      ...old,
+      ...updates,
+    }));
+  };
+
   const handlePostComment = async (commentText: string, setCommentText: (text: string) => void) => {
-    if (!commentText.trim()) return;
-    await addComment(commentText);
+    if (!commentText || !commentText.trim()) return;
+    await addComment({ postId, content: commentText });
     setCommentText("");
   };
 
   const handleDeleteComment = async (id: number) => {
     await deleteComment(id);
-    setIsDeleteModalOpen(false);
-    setSelectedCommentId(null);
+    updateModalState({
+      isDeleteModalOpen: false,
+      selectedCommentId: null,
+    });
   };
 
   const openDeleteModal = (id: number) => {
-    setSelectedCommentId(id);
-    setIsDeleteModalOpen(true);
+    updateModalState({
+      selectedCommentId: id,
+      isDeleteModalOpen: true,
+    });
   };
 
   const closeDeleteModal = () => {
-    setSelectedCommentId(null);
-    setIsDeleteModalOpen(false);
+    updateModalState({
+      selectedCommentId: null,
+      isDeleteModalOpen: false,
+    });
   };
 
   return {
