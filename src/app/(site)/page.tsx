@@ -1,15 +1,19 @@
+"use client";
+
 import Stories from "@/src/modules/stories/components/sections/Stories";
+import PostsFeed from "@/src/modules/posts/components/section/PostsFeed";
 
 export default function Home() {
   return (
     <div className="flex">
-
       <div className="flex-1 flex justify-center">
-        <div className="flex gap-20  mx-auto p-5">
+        <div className="flex gap-20 mx-auto p-5">
           <div className="w-157.5">
             <Stories />
+            <div className="mt-6">
+              <PostsFeed />
+            </div>
           </div>
-
           <div className="w-79.75">{/* Right side content */}</div>
         </div>
       </div>

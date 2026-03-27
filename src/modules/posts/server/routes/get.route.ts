@@ -4,9 +4,6 @@ import { prisma } from "@/src/lib/db";
 
 export async function GET(request: NextRequest) {
   try {
-    // Allow public access to view posts (no auth required)
-    
-    // Test database connection
     try {
       await prisma.$connect();
     } catch (dbError) {
@@ -19,15 +16,25 @@ export async function GET(request: NextRequest) {
     
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
+    const limit = parseInt(searchParams.get('limit') || '10');
+    const cursor = searchParams.get('cursor');
     
     const posts = await prisma.post.findMany({
       where: userId ? { userId: parseInt(userId) } : undefined,
+      take: limit,
+      ...(cursor && {
+        skip: 1,
+        cursor: {
+          id: parseInt(cursor)
+        }
+      }),
       include: {
         user: {
           select: {
             id: true,
             username: true,
             name: true,
+            imageUrl: true,
           },
         },
         _count: {
@@ -41,7 +48,12 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    return NextResponse.json(posts);
+    const nextCursor = posts.length > 0 ? posts[posts.length - 1].id.toString() : null;
+
+    return NextResponse.json({
+      posts,
+      nextCursor
+    });
   } catch (error) {
     console.error("Get posts error:", error);
     return NextResponse.json(

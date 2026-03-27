@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useStories } from "@/src/modules/stories/hooks/useStories";
 import type { UserProfile } from "@/src/modules/user-profile/types";
 
@@ -15,8 +15,14 @@ interface UseProfileStoriesReturn {
 }
 
 export function useProfileStories({ user }: UseProfileStoriesProps): UseProfileStoriesReturn {
+  const queryClient = useQueryClient();
   const { groupedStories } = useStories();
-  const [selectedUserIndex, setSelectedUserIndex] = useState<number | null>(null);
+
+  const selectedUserIndex = queryClient.getQueryData<number | null>(["selectedStoryUser", user.id]) || null;
+
+  const setSelectedUserIndex = (index: number | null) => {
+    queryClient.setQueryData(["selectedStoryUser", user.id], index);
+  };
 
   const handleAvatarClick = () => {
     const userStoryIndex = groupedStories.findIndex(story => story.user.id === user.id);

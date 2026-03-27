@@ -1,7 +1,8 @@
 'use client';
 
+import { UploadButton } from '@/src/utils/uploadthing';
 import { useState } from 'react';
-import { UploadButton } from '../../../utils/uploadthing';
+
 
 interface PostUploaderProps {
   onUpload: (mediaUrl: string) => Promise<void>;
@@ -30,12 +31,14 @@ export function PostUploader({ onUpload }: PostUploaderProps) {
         }}
         appearance={{
           button: {
-            background: '#3B82F6',
+            background: 'rgb(74, 93, 249)',
             color: 'white',
             padding: '8px 16px',
             borderRadius: '8px',
             fontSize: '14px',
-            fontWeight: '500',
+            fontWeight: '600',
+            height: '31.9886px',
+            width: '178.8px',
           },
           container: {
             display: 'flex',

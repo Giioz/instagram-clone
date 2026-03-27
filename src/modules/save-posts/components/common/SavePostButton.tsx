@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Bookmark } from 'lucide-react';
 import { SavePostService } from '../../service/savePost-service';
 
 interface SavePostButtonProps {
@@ -36,12 +35,23 @@ export default function SavePostButton({ postId, isSaved = false, onSaveChange }
   };
 
   return (
-    <button 
-      className={`hover:text-gray-300 transition ${saved ? 'text-blue-500' : ''}`}
+    <button
       onClick={handleSave}
       disabled={loading}
+      className={`p-1 transition-colors ${saved ? 'text-blue-500' : 'hover:text-gray-300'} cursor-pointer`}
     >
-      <Bookmark size={22} fill={saved ? 'currentColor' : 'none'} />
+      <svg
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill={saved ? 'currentColor' : 'none'}
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <polygon points="20 21 12 13.44 4 21 4 3 20 3 20 21"></polygon>
+      </svg>
     </button>
   );
 }
