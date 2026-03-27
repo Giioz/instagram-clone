@@ -2,13 +2,17 @@
 
 import { Heart, MessageCircle, Send } from "lucide-react";
 import SavePostButton from "@/src/modules/save-posts/components/common/SavePostButton";
-import { usePostLikes } from "@/src/modules/likes/hooks/usePostLikes";
+import { usePostLike } from "@/src/modules/posts-details-page/hooks/usePostLike";
 import { useRelativeTime } from "../../hooks/useRelativeTime";
 import { useFollowMutation } from "@/src/modules/follow/hooks/mutations/useFollowMutation";
 import { User } from "@prisma/client";
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import PostOptionsModal from "./PostOptionsModal";
+import CommentModal from "@/src/modules/comment/component/common/CommentModal";
+
+
 
 interface Post {
   id: number;
@@ -37,13 +41,16 @@ interface PostItemProps {
 }
 
 export default function PostItem({ post, currentUser }: PostItemProps) {
-  const { isLiked, isLoading, handleLike, likes } = usePostLikes(
-    currentUser,
-    post
-  );
+  const router = useRouter();
+  const { likes, isLiked, isLoading, toggleLike } = usePostLike({
+    postId: post.id,
+    initialLikes: post.likes,
+  });
   const { getRelativeTime } = useRelativeTime();
   const { follow, unfollow } = useFollowMutation();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
+  const [isPostDetailsModalOpen, setIsPostDetailsModalOpen] = useState(false);
   
   const handleFollow = async () => {
     if (post.isFollowing) {
@@ -66,7 +73,7 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
   };
 
   const handleGoToPost = () => {
-    console.log("Go to post:", post.id);
+    router.push(`/posts/${post.id}`);
     setIsModalOpen(false);
   };
 
@@ -229,7 +236,7 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
           <div className="flex items-center gap-2">
             <div className="flex items-center justify-center gap-2">
               <button
-                onClick={handleLike}
+                onClick={toggleLike}
                 disabled={isLoading}
                 className={`bg-transparent transition-all flex items-center justify-center ${
                   isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
@@ -247,10 +254,10 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
                 />
               </button>
 
-              <div className="text-[16px] font-semibold ">{likes.length}</div>
+              <div className="text-[16px] font-semibold ">{likes}</div>
             </div>
 
-            <button className="hover:text-gray-300 transition">
+            <button onClick={() => setIsCommentModalOpen(true)} className="hover:text-gray-300 transition">
               <svg
                 aria-label="Comment"
                 fill="none"
@@ -322,6 +329,12 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
         onAboutAccount={handleAboutAccount}
         showUnfollow={!!(currentUser && currentUser.id !== post.user.id && post.isFollowing)}
         user={post.user}
+      />
+      
+      <CommentModal
+        isOpen={isCommentModalOpen}
+        onClose={() => setIsCommentModalOpen(false)}
+        post={post}
       />
     </div>
   );
