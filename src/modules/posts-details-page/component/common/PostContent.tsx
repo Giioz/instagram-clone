@@ -1,4 +1,4 @@
-import CommentsSection from "@/src/modules/posts-details-page/component/common/CommentsSection";
+import CommentsSection from "@/src/modules/posts-details-page/component/sections/CommentsSection";
 import PostHeader from "@/src/modules/posts-details-page/component/common/PostHeader";
 import PostActions from "@/src/modules/posts-details-page/component/common/PostActions";
 import CommentInput from "@/src/modules/posts-details-page/component/common/CommentInput";
@@ -49,7 +49,7 @@ export default function PostContent(props: PostContentProps) {
   const { getRelativeTime } = useRelativeTime();
 
   return (
-    <div className="w-full lg:w-[335px] h-[631.989px] flex flex-col border border-[#363636]">
+    <div className="w-full lg:w-[335px] lg:h-[631.989px] flex flex-col border border-[#363636]">
       <PostHeader
         post={post}
         currentUser={currentUser}

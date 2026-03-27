@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePostLikes } from "@/src/modules/likes/hooks/usePostLikes";
 import { usePostComments } from "@/src/modules/posts-details-page/hooks/usePostComments";
@@ -27,11 +28,7 @@ interface Post {
 
 export function usePostContent(post: Post, currentUser: User | null) {
   const queryClient = useQueryClient();
-  const commentText = queryClient.getQueryData<string>(["postCommentText", post.id]) || "";
-
-  const setCommentText = (text: string) => {
-    queryClient.setQueryData(["postCommentText", post.id], text);
-  };
+  const [commentText, setCommentText] = useState("");
 
   const { isLiked, isLoading: likeLoading, handleLike } = usePostLikes({ currentUser, post });
   const { handleFollow, follow, unfollow } = usePostFollow(post.user.id, post.isFollowing || false);
@@ -53,7 +50,7 @@ export function usePostContent(post: Post, currentUser: User | null) {
     currentUser,
     comments,
     isLoading,
-    error,
+    error: error?.message || null,
     isLiked,
     likeLoading,
     handleLike,

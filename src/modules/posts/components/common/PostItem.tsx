@@ -12,8 +12,6 @@ import { useRouter } from "next/navigation";
 import PostOptionsModal from "./PostOptionsModal";
 import CommentModal from "@/src/modules/comment/component/common/CommentModal";
 
-
-
 interface Post {
   id: number;
   userId: number;
@@ -50,8 +48,7 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
   const { follow, unfollow } = useFollowMutation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
-  const [isPostDetailsModalOpen, setIsPostDetailsModalOpen] = useState(false);
-  
+
   const handleFollow = async () => {
     if (post.isFollowing) {
       await unfollow.mutateAsync({ followingId: post.user.id.toString() });
@@ -82,7 +79,7 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
     window.location.href = `/${post.user.username}`;
     setIsModalOpen(false);
   };
-  
+
   const getImageUrls = (imageUrl: string | null): string[] => {
     if (!imageUrl) return [];
     try {
@@ -132,13 +129,27 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
               {follow.isPending || unfollow.isPending ? (
                 <span className="flex items-center gap-1">
                   <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
                   </svg>
-                  {post.isFollowing ? 'Following' : 'Follow'}
+                  {post.isFollowing ? "Following" : "Follow"}
                 </span>
+              ) : post.isFollowing ? (
+                "Following"
               ) : (
-                post.isFollowing ? 'Following' : 'Follow'
+                "Follow"
               )}
             </button>
           )}
@@ -154,55 +165,14 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
       {imageUrls.length > 0 && (
         <div className="w-full object-cover ">
           {imageUrls.length === 1 ? (
-            <div className="relative w-full h-150 rounded-sm border border-[#262626] overflow-hidden">
+            <div className="w-full max-h-157.5 rounded-sm border border-[#262626] overflow-hidden flex justify-center">
               <Image
                 src={imageUrls[0]}
                 alt="post"
-                fill
-                className="object-cover"
+                width={800}
+                height={800}
+                className="w-full h-auto object-contain"
               />
-            </div>
-          ) : imageUrls.length === 2 ? (
-            <div className="grid grid-cols-2 gap-0.5">
-              {imageUrls.map((url, index) => (
-                <div
-                  key={index}
-                  className="relative w-full h-75 overflow-hidden"
-                >
-                  <Image
-                    src={url}
-                    alt={`post ${index + 1}`}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-          ) : imageUrls.length === 3 ? (
-            <div className="grid grid-cols-2 gap-0.5">
-              <div className="relative w-full h-100 row-span-2 overflow-hidden">
-                <Image
-                  src={imageUrls[0]}
-                  alt="post 1"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="grid grid-rows-2 gap-0.5">
-                {imageUrls.slice(1).map((url, index) => (
-                  <div
-                    key={index + 1}
-                    className="relative w-full h-50 overflow-hidden"
-                  >
-                    <Image
-                      src={url}
-                      alt={`post ${index + 2}`}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-0.5">
@@ -257,7 +227,10 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
               <div className="text-[16px] font-semibold ">{likes}</div>
             </div>
 
-            <button onClick={() => setIsCommentModalOpen(true)} className="hover:text-gray-300 transition">
+            <button
+              onClick={() => setIsCommentModalOpen(true)}
+              className="hover:text-gray-300 transition"
+            >
               <svg
                 aria-label="Comment"
                 fill="none"
@@ -319,7 +292,7 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
           <span className="font-normal">{post.content}</span>
         </p>
       </div>
-      
+
       <PostOptionsModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -327,10 +300,12 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
         onAddToFavorites={handleAddToFavorites}
         onGoToPost={handleGoToPost}
         onAboutAccount={handleAboutAccount}
-        showUnfollow={!!(currentUser && currentUser.id !== post.user.id && post.isFollowing)}
+        showUnfollow={
+          !!(currentUser && currentUser.id !== post.user.id && post.isFollowing)
+        }
         user={post.user}
       />
-      
+
       <CommentModal
         isOpen={isCommentModalOpen}
         onClose={() => setIsCommentModalOpen(false)}
