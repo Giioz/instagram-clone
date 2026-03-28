@@ -21,12 +21,11 @@ export function StoryUploader({ onUpload }: StoryUploaderProps) {
           setIsUploading(false);
         }}
         onUploadBegin={() => setIsUploading(true)}
-        onUploadError={(error: Error) => {
-          console.error('Upload error:', error);
+        onUploadError={() => {
           setIsUploading(false);
         }}
       />
-      {isUploading && <p>Uploading...</p>}
+      {isUploading && <p>Uploading</p>}
     </div>
   );
 }
