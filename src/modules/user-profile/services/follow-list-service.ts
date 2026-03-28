@@ -22,8 +22,6 @@ export async function getFollowers(userId: number, currentUserId: number): Promi
       }
     }
   });
-
-  // Check if current user is following each follower back
   const followersWithFollowStatus = await Promise.all(
     followers.map(async (follow) => {
       const isFollowingBack = await prisma.follow.findFirst({

@@ -1,10 +1,53 @@
 import { prisma } from "@/src/lib/db";
 import type { JWTPayload } from "@/src/lib/auth";
 
-export async function getUserProfile(username: string, currentUser: JWTPayload | null) {
-  const user = await prisma.user.findUnique({
+function nfc(s: string): string {
+  try {
+    return s.normalize("NFC");
+  } catch {
+    return s;
+  }
+}
+
+function usernameLookupCandidates(raw: string): string[] {
+  const seen = new Set<string>();
+  const add = (s: string) => {
+    const t = s.trim();
+    if (!t) return;
+    seen.add(t);
+    seen.add(nfc(t));
+    if (/^[a-zA-Z0-9._]+$/.test(t)) {
+      seen.add(t.toLowerCase());
+      seen.add(t.toUpperCase());
+    }
+  };
+
+  add(raw);
+
+  try {
+    let s = raw.trim();
+    for (let i = 0; i < 3 && /%[0-9A-Fa-f]{2}/.test(s); i++) {
+      const next = decodeURIComponent(s);
+      if (next === s) break;
+      add(next);
+      s = next;
+    }
+  } catch {
+    // ignore
+  }
+
+  return [...seen];
+}
+
+export async function getUserProfile(usernameParam: string, currentUser: JWTPayload | null) {
+  const candidates = usernameLookupCandidates(usernameParam);
+  if (candidates.length === 0) {
+    return null;
+  }
+
+  const user = await prisma.user.findFirst({
     where: {
-      username,
+      username: { in: candidates },
     },
     select: {
       id: true,
@@ -49,7 +92,8 @@ export async function getUserProfile(username: string, currentUser: JWTPayload |
     });
     isFollowing = !!followRelation;
   }
-  const isOwnProfile = currentUser?.username === username;
+  const isOwnProfile =
+    !!currentUser && nfc(currentUser.username) === nfc(user.username);
 
   return {
     ...user,
