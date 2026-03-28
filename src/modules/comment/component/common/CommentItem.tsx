@@ -77,7 +77,7 @@ export default function CommentItem({ comment, postAuthorUsername, onDelete }: C
       </div>
       <div className="flex items-center pt-1">
         <button 
-          onClick={toggleLike}
+          onClick={() => toggleLike()}
           disabled={isLoading}
           className={`flex items-center gap-1 transition-colors ${
             isLiked ? "text-red-500" : "text-[#A8A8A8] hover:text-red-500"
