@@ -2,10 +2,12 @@ interface PostOptionsModalProps {
   isOpen: boolean;
   onClose: () => void;
   onUnfollow: () => void;
+  onFollow?: () => void;
   onAddToFavorites: () => void;
   onGoToPost: () => void;
   onAboutAccount: () => void;
   showUnfollow?: boolean;
+  showFollow?: boolean;
   user: {
     id: number;
     username: string;
@@ -18,10 +20,12 @@ export default function PostOptionsModal({
   isOpen,
   onClose,
   onUnfollow,
+  onFollow,
   onAddToFavorites,
   onGoToPost,
   onAboutAccount,
   showUnfollow = false,
+  showFollow = false,
   user,
 }: PostOptionsModalProps) {
   if (!isOpen) return null;
@@ -44,6 +48,7 @@ export default function PostOptionsModal({
             Unfollow
           </button>
         )}
+
         
         <button
           onClick={onAddToFavorites}

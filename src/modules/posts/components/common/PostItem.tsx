@@ -5,6 +5,7 @@ import SavePostButton from "@/src/modules/save-posts/components/common/SavePostB
 import { usePostLike } from "@/src/modules/posts-details-page/hooks/usePostLike";
 import { useRelativeTime } from "../../hooks/useRelativeTime";
 import { useFollowMutation } from "@/src/modules/follow/hooks/mutations/useFollowMutation";
+import { useFollowStats } from "@/src/modules/follow/hooks/queries/useFollowStats";
 import { User } from "@prisma/client";
 import Image from "next/image";
 import { useState } from "react";
@@ -46,20 +47,29 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
   });
   const { getRelativeTime } = useRelativeTime();
   const { follow, unfollow } = useFollowMutation();
+  const { data: followStats } = useFollowStats(post.user.id.toString());
+  const isFollowing = followStats?.isFollowing || post.isFollowing || false;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
-
+  
   const handleFollow = async () => {
-    if (post.isFollowing) {
-      await unfollow.mutateAsync({ followingId: post.user.id.toString() });
+    if (isFollowing) {
+      unfollow.mutate({ followingId: post.user.id.toString() });
     } else {
-      await follow.mutateAsync({ followingId: post.user.id.toString() });
+      follow.mutate({ followingId: post.user.id.toString() });
     }
   };
 
+  const handleFollowFromModal = () => {
+    if (!isFollowing) {
+      follow.mutate({ followingId: post.user.id.toString() });
+    }
+    setIsModalOpen(false);
+  };
+
   const handleUnfollowFromModal = () => {
-    if (post.isFollowing) {
-      unfollow.mutateAsync({ followingId: post.user.id.toString() });
+    if (isFollowing) {
+      unfollow.mutate({ followingId: post.user.id.toString() });
     }
     setIsModalOpen(false);
   };
@@ -120,7 +130,7 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {currentUser && currentUser.id !== post.user.id && (
+          {currentUser && currentUser.id !== post.user.id && !isFollowing && (
             <button
               onClick={handleFollow}
               disabled={follow.isPending || unfollow.isPending}
@@ -144,10 +154,8 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     />
                   </svg>
-                  {post.isFollowing ? "Following" : "Follow"}
+                  Follow
                 </span>
-              ) : post.isFollowing ? (
-                "Following"
               ) : (
                 "Follow"
               )}
@@ -301,7 +309,7 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
         onGoToPost={handleGoToPost}
         onAboutAccount={handleAboutAccount}
         showUnfollow={
-          !!(currentUser && currentUser.id !== post.user.id && post.isFollowing)
+          !!(currentUser && currentUser.id !== post.user.id && isFollowing)
         }
         user={post.user}
       />
