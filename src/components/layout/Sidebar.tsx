@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useProfile } from "@/src/modules/edit-profile/hooks/useProfile";
+import { CreatePostModal } from "@/src/modules/posts/components/common/CreatePostModal";
 
 const mainItems = [
   {
@@ -396,6 +397,10 @@ export default function Sidebar() {
         </div>
       </div>
 
+      <CreatePostModal
+        isOpen={showCreatePostModal}
+        onClose={() => setShowCreatePostModal(false)}
+      />
     </div>
   );
 }
