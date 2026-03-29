@@ -38,7 +38,7 @@ export function useStoryLikes({ currentUser, currentStory }: UseStoryLikesProps)
       console.error("Error fetching story likes:", error);
       setError("Failed to load likes");
     }
-  }, [currentStory, currentUser.id]);
+  }, [currentStory, currentUser?.id]);
 
   useEffect(() => {
     fetchLikeStatus();
@@ -66,8 +66,6 @@ export function useStoryLikes({ currentUser, currentStory }: UseStoryLikesProps)
         setError("Failed to toggle like");
         throw new Error("Failed to toggle like");
       }
-
-      // Refetch likes to get updated state
       await fetchLikeStatus();
     } catch (error) {
       console.error("Error toggling story like:", error);

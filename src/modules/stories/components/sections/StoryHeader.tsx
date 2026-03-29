@@ -1,4 +1,4 @@
-import { X, Trash2 } from "lucide-react";
+import { X, Trash2, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import type { User, Story } from "@prisma/client";
 import type { JWTPayload } from "@/src/lib/auth";
@@ -75,7 +75,8 @@ export default function StoryHeader({
               {getTimeAgo(new Date(currentStory.createdAt))}
             </p>
           </div>
-        </Link>
+        </div>
+
         <div className="flex items-center ">
           {/* MUTE */}
           {/* <button 
