@@ -12,6 +12,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import PostOptionsModal from "./PostOptionsModal";
 import CommentModal from "@/src/modules/comment/component/common/CommentModal";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 interface Post {
   id: number;
@@ -19,6 +24,7 @@ interface Post {
   content: string;
   imageUrl: string | null;
   likes: number;
+  commentsDisabled?: boolean;
   createdAt: Date;
   updatedAt: Date;
   user: {
@@ -96,6 +102,9 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
       const parsed = JSON.parse(imageUrl);
       return Array.isArray(parsed) ? parsed : [imageUrl];
     } catch {
+      if (imageUrl.includes(',')) {
+        return imageUrl.split(',').map(url => url.trim()).filter(url => url);
+      }
       return [imageUrl];
     }
   };
@@ -171,7 +180,7 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
         </div>
       </div>
       {imageUrls.length > 0 && (
-        <div className="w-full object-cover ">
+        <div className="w-full">
           {imageUrls.length === 1 ? (
             <div className="w-full max-h-157.5 rounded-sm border border-[#262626] overflow-hidden flex justify-center">
               <Image
@@ -183,28 +192,25 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
               />
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-0.5">
-              {imageUrls.slice(0, 4).map((url, index) => (
-                <div
-                  key={index}
-                  className="relative w-full h-75 overflow-hidden"
-                >
-                  <Image
-                    src={url}
-                    alt={`post ${index + 1}`}
-                    fill
-                    className="object-cover"
-                  />
-                  {index === 3 && imageUrls.length > 4 && (
-                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                      <span className="text-white text-2xl font-bold">
-                        +{imageUrls.length - 4}
-                      </span>
-                    </div>
-                  )}
-                </div>
+            <Swiper
+              modules={[Navigation, Pagination]}
+              navigation
+              pagination={{ clickable: true }}
+              className="w-full max-h-[600px] rounded-sm border border-[#262626]"
+            >
+              {imageUrls.map((url, index) => (
+                <SwiperSlide key={index}>
+                  <div className="relative w-full h-[500px] flex items-center justify-center bg-black">
+                    <Image
+                      src={url}
+                      alt={`post ${index + 1}`}
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                </SwiperSlide>
               ))}
-            </div>
+            </Swiper>
           )}
         </div>
       )}
