@@ -18,13 +18,15 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+    const imageUrlsJson = Array.isArray(imageUrls)
+      ? JSON.stringify(imageUrls.filter(url => url && url.trim() !== ""))
+      : imageUrls?.trim() || null;
+
     const post = await prisma.post.create({
       data: {
         userId: parseInt(payload.userId),
         content,
-        imageUrl: Array.isArray(imageUrls)
-          ? imageUrls.find((url) => url && url.trim() !== "") || null
-          : imageUrls?.trim() || null,
+        imageUrl: imageUrlsJson,
       },
       include: {
         user: {

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "@/src/lib/auth";
+import { prisma } from "@/src/lib/db";
 
 export async function GET(request: NextRequest) {
   try {
@@ -12,7 +13,15 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return NextResponse.json(payload);
+    const user = await prisma.user.findUnique({
+      where: { id: parseInt(payload.userId, 10) },
+      select: { imageUrl: true },
+    });
+
+    return NextResponse.json({
+      ...payload,
+      imageUrl: user?.imageUrl || null,
+    });
   } catch (error) {
     console.error("Get current user error:", error);
     return NextResponse.json(
