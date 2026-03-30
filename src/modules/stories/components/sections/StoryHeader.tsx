@@ -1,9 +1,8 @@
-import { X, MoreHorizontal, Trash2 } from "lucide-react";
+import { MoreHorizontal, Trash2 } from "lucide-react";
 import Link from "next/link";
 import type { User, Story } from "@prisma/client";
 import type { JWTPayload } from "@/src/lib/auth";
 import { useTimeAgo } from "@/src/modules/stories/hooks/useTimeAgo";
-import { useState } from "react";
 
 interface StoryHeaderProps {
   currentUser: User;
@@ -12,7 +11,6 @@ interface StoryHeaderProps {
   currentStoryIndex: number;
   progress: number;
   user: JWTPayload | null;
-  onClose: () => void;
   onDeleteStory: () => void;
   isPaused: boolean;
   setIsPaused: (isPaused: boolean) => void;
@@ -25,13 +23,11 @@ export default function StoryHeader({
   currentStoryIndex,
   progress,
   user,
-  onClose,
   onDeleteStory,
   isPaused,
   setIsPaused,
 }: StoryHeaderProps) {
   const { getTimeAgo } = useTimeAgo();
-  const [isMuted, setIsMuted] = useState(false);
 
   return (
     <div className="absolute top-0 left-0 right-0 z-10 p-4 max-md:p-6">
@@ -39,7 +35,7 @@ export default function StoryHeader({
         {stories.map((_, index) => (
           <div
             key={index}
-            className="flex-1 h-[2px] bg-white/30 rounded-full overflow-hidden"
+            className="flex-1 h-0.5 bg-white/30 rounded-full overflow-hidden"
           >
             <div
               className="h-full bg-white transition-all duration-100"
