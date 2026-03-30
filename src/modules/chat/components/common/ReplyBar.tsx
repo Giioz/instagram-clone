@@ -11,10 +11,10 @@ export default function ReplyBar({ replyTo, myId, selectedPeer, setReplyTo }: Re
   if (!replyTo) return null;
 
   return (
-    <div className="flex items-center justify-between px-4 py-2  border-t border-gray-800 h-[60px]">
+    <div className="flex items-center justify-between px-4 py-2  border-t border-gray-800 h-15">
       <div className="flex flex-col">
         <span className="text-xs font-normal">Replying to {replyTo.senderId === myId ? "yourself" : selectedPeer?.username}</span>
-        <span className="text-sm text-gray-400 truncate max-w-[250px]">{replyTo.text}</span>
+        <span className="text-sm text-gray-400 truncate max-w-62.5">{replyTo.text}</span>
       </div>
       <button
         type="button"

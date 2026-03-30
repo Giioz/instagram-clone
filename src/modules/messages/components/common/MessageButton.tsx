@@ -11,7 +11,7 @@ export default function MessageButton({ username }: { username: string }) {
       onClick={() =>
         router.push(`/messages?with=${encodeURIComponent(username)}`)
       }
-      className="w-[324.016px] h-[44px] rounded-lg font-semibold transition-all bg-gray-700 text-white hover:bg-gray-600 flex items-center justify-center gap-2"
+      className="w-[324.016px] h-11 rounded-lg font-semibold transition-all bg-gray-700 text-white hover:bg-gray-600 flex items-center justify-center gap-2"
     >
       <MessageCircle size={18} />
       Message
