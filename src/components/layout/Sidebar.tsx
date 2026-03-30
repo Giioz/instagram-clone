@@ -1,7 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { useProfile } from "@/src/modules/edit-profile/hooks/useProfile";
+import { useAuth } from "@/src/modules/auth/hooks/useAuth";
+import { useConversations } from "@/src/modules/chat/hooks/useChatData";
 import { CreatePostModal } from "@/src/modules/posts/components/common/CreatePostModal";
 
 const mainItems = [
@@ -221,8 +224,26 @@ const createOptions = [
 export default function Sidebar() {
   const [showCreateDropdown, setShowCreateDropdown] = useState(false);
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
-  const { imageUrl } = useProfile();
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
+  const { data: chatConversations } = useConversations(!!user);
+  const totalChatUnread = useMemo(
+    () => chatConversations?.reduce((s, c) => s + c.unread, 0) ?? 0,
+    [chatConversations],
+  );
+  const { imageUrl, profile } = useProfile();
   const sidebarRef = useRef<HTMLDivElement>(null);
+
+  const goToMyProfile = () => {
+    const username = user?.username?.trim() || profile?.username?.trim();
+    if (username) {
+      router.push(`/profile/${encodeURIComponent(username)}`);
+      return;
+    }
+    if (!authLoading) {
+      router.push("/login");
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -247,8 +268,9 @@ export default function Sidebar() {
         src={imageUrl || "/default-avatar.png"}
         alt="Profile"
         className="w-full h-full rounded-full object-cover border border-gray-600 cursor-pointer hover:border-gray-400 transition-colors"
-        onClick={() => {
-          window.location.href = "/profile";
+        onClick={(e) => {
+          e.stopPropagation();
+          goToMyProfile();
         }}
         onError={(e) => {
           e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666'%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3Cpath d='M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2'/%3E%3C/svg%3E";
@@ -281,26 +303,37 @@ export default function Sidebar() {
       <nav className="flex flex-col gap-4 flex-1">
         {allMainItems.map((item) => (
           <div key={item.label} className="relative">
-            <button
-              className="flex items-center gap-4 text-gray-300 hover:text-white hover:bg-gray-900 px-2 py-2 rounded-lg transition w-full"
-              onClick={() => {
-                if (item.label === "Create") {
-                  setShowCreateDropdown(!showCreateDropdown);
-                } else if (item.label === "Profile") {
-                  window.location.href = "/profile";
-                } else {
-                  window.location.href = "/" + item.label.toLowerCase();
-                }
-              }}
-            >
-              <div className="relative">
-                <item.icon />
-              </div>
+       <button
+      className="flex items-center gap-4 text-gray-300 hover:text-white hover:bg-gray-900 px-2 py-2 rounded-lg transition w-full"
+      onClick={() => {
+        if (item.label === "Create") {
+          setShowCreateDropdown(!showCreateDropdown);
+        } else if (item.label === "Profile") {
+          goToMyProfile();
+        } else if (item.label === "Home") {
+          router.push("/");
+        } else if (item.label === "Messages") {
+          router.push("/messages");
+        } else if (item.label === "Post") {
+          setShowCreatePostModal(true);
+        } else {
+          router.push("/" + item.label.toLowerCase());
+        }
+      }}
+    >
+      <div className="relative">
+        <item.icon />
+        {item.label === "Messages" && totalChatUnread > 0 && (
+          <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-sky-600 px-1 text-[9px] font-bold leading-none text-white">
+            {totalChatUnread > 99 ? "99+" : totalChatUnread}
+          </span>
+        )}
+      </div>
 
-              <span className="opacity-0 group-hover:opacity-100 whitespace-nowrap transition">
-                {item.label}
-              </span>
-            </button>
+      <span className="opacity-0 group-hover:opacity-100 whitespace-nowrap transition">
+        {item.label}
+      </span>
+    </button>
 
             {item.label === "Create" && showCreateDropdown && (
               <div className="absolute top-full left-0 mt-2 bg-[#1C1C1C] rounded-lg shadow-lg overflow-hidden min-w-50 z-50">
@@ -401,6 +434,7 @@ export default function Sidebar() {
         isOpen={showCreatePostModal}
         onClose={() => setShowCreatePostModal(false)}
       />
+
     </div>
   );
 }

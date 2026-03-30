@@ -120,10 +120,9 @@ export function PostPreviewModal({
     <>
       <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 ">
         <div className=" w-full max-w-[880px] h-[583.082px] rounded-[24px] flex flex-col overflow-hidden">
-          {/* Header */}
           <div className="h-[42.0881px] flex items-center justify-between px-4 bg-[rgb(12,16,20)]">
             <button onClick={onClose} className="text-white hover:text-gray-300">
-<svg aria-label="Back" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24" role="img" viewBox="0 0 24 24" width="24"><title>Back</title><line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="2.909" x2="22.001" y1="12.004" y2="12.004"></line><polyline fill="none" points="9.276 4.726 2.001 12.004 9.276 19.274" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline></svg>
+<svg aria-label="Back" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24" role="img" viewBox="0 0 24 24" width="24"><title>Back</title><line fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" x1="2.909" x2="22.001" y1="12.004" y2="12.004"></line><polyline fill="none" points="9.276 4.726 2.001 12.004 9.276 19.274" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></polyline></svg>
             </button>
             <h2 className="text-white font-semibold text-base">Create new post</h2>
             <button
@@ -134,12 +133,8 @@ className="text-[rgb(133,161,255)] hover:text-[#A3BCFF] hover:underline font-sem
               {isSubmitting ? "Posting..." : "Share"}
             </button>
           </div>
-
-          {/* Main Content - Two Column Layout */}
           <div className="flex-1 flex">
-            {/* Left - Image Preview */}
             <div className="flex-1 bg-black flex flex-col relative">
-              {/* Main Image */}
               <div className="flex-1 flex items-center justify-center relative">
                 <div className="relative w-full h-full">
                   <NextImage
@@ -168,8 +163,6 @@ className="text-[rgb(133,161,255)] hover:text-[#A3BCFF] hover:underline font-sem
                     </button>
                   </>
                 )}
-
-                {/* MiniPhotoPanel inside image area */}
                 <div className="absolute bottom-4 right-4 z-50">
                   <MiniPhotoPanel
                     imageUrls={imageUrls}
@@ -188,10 +181,7 @@ className="text-[rgb(133,161,255)] hover:text-[#A3BCFF] hover:underline font-sem
                 </div>
               </div>
             </div>
-
-            {/* Right - Details Panel */}
             <div className="w-[339.091px] bg-[#202328] border-l border-[#363636] flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-[#555] scrollbar-track-transparent hover:scrollbar-thumb-[#777]">
-              {/* User Info */}
               <div className="p-4 h-[59.9929px] ">
                 <div className="flex items-center h gap-3">
                   <div className="w-[27.9972px] h-[27.9972px] rounded-full bg-gray-600 overflow-hidden">
@@ -214,8 +204,6 @@ className="text-[rgb(133,161,255)] hover:text-[#A3BCFF] hover:underline font-sem
                   </span>
                 </div>
               </div>
-
-              {/* Caption Input */}
               <div className="flex-1 p-4 border-none relative">
                 <input
                   type="text"
@@ -233,7 +221,6 @@ className="text-[rgb(133,161,255)] hover:text-[#A3BCFF] hover:underline font-sem
                 </div>
               </div>
 
-              {/* Advanced Settings */}
               <div>
                 <button 
                   onClick={() => setShowAdvanced(!showAdvanced)}
@@ -247,7 +234,6 @@ className="text-[rgb(133,161,255)] hover:text-[#A3BCFF] hover:underline font-sem
                 </button>
                 {showAdvanced && (
                   <div className="px-4 py-3 bg-[#202328] space-y-6">
-                    {/* Hide like and view counts */}
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-white text-[16px] font-normal">Hide like and view counts on this post</span>
@@ -263,8 +249,6 @@ className="text-[rgb(133,161,255)] hover:text-[#A3BCFF] hover:underline font-sem
                       </p>
                       <button className="text-[rgb(112,141,255)] text-[12px] hover:underline mt-1">Learn more</button>
                     </div>
-
-                    {/* Turn off commenting */}
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-white text-[16px] font-normal">Turn off commenting</span>
@@ -282,8 +266,6 @@ className="text-[rgb(133,161,255)] hover:text-[#A3BCFF] hover:underline font-sem
                   </div>
                 )}
               </div>
-
-              {/* Accessibility */}
               <div>
                 <button 
                   onClick={() => setShowAccessibility(!showAccessibility)}
