@@ -1,19 +1,7 @@
-import { Heart, Send } from "lucide-react";
+import { Heart } from "lucide-react";
 import type { User, Story } from "@prisma/client";
 import type { JWTPayload } from "@/src/lib/auth";
 import { useStoryLikes } from "../../hooks/useStoryLikes";
-
-interface StoryLike {
-  id: number;
-  userId: number;
-  storyId: number;
-  createdAt: string;
-  user: {
-    id: number;
-    username: string;
-    name: string;
-  };
-}
 
 interface StoryActionsProps {
   currentUser: User;
@@ -26,10 +14,10 @@ export default function StoryActions({
   currentStory,
   user,
 }: StoryActionsProps) {
-  const { isLiked, isLoading, error, handleLike } = useStoryLikes(
-    currentUser,
-    currentStory
-  );
+  const { isLiked, isLoading, error, handleLike } = useStoryLikes({
+    viewer: user,
+    currentStory,
+  });
 
   if (!currentStory) return null;
 
@@ -50,15 +38,16 @@ export default function StoryActions({
           />
         </div>
         <button
+          type="button"
           onClick={handleLike}
           disabled={isLoading}
-          className={`text-white hover:scale-110 transition-transform ${
+          className={`bg-transparent transition-colors ${
             isLoading ? "opacity-50" : ""
-          }`}
+          } ${isLiked ? "text-red-500" : "text-white"}`}
         >
           <Heart
             size={24}
-            className={isLiked ? "fill-red-500 text-red-500" : ""}
+            className={`transition-colors ${isLiked ? "fill-red-500" : ""}`}
           />
         </button>
         <button className="text-white hover:scale-110 transition-transform">

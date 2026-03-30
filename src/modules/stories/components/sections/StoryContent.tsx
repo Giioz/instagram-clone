@@ -15,12 +15,14 @@ export default function StoryContent({ currentStory, currentUser, onStoryClick }
         onClick={onStoryClick}
       >
         <div className="relative w-full h-full">
-          <Image
-            src={currentStory.mediaUrl}
-            alt={`${currentUser?.username || "user"}'s story`}
-            fill
-            className="object-contain transition-opacity duration-300 ease-in-out"
-          />
+          {currentStory.mediaUrl && (
+            <Image
+              src={currentStory.mediaUrl}
+              alt={`${currentUser?.username || "user"}'s story`}
+              fill
+              className="object-contain transition-opacity duration-300 ease-in-out"
+            />
+          )}
         </div>
       </div>
     </>
