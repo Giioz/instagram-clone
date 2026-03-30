@@ -39,16 +39,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
-    const { storyId } = await request.json();
-    
-    if (!storyId) {
+    const body = await request.json();
+    const storyIdRaw = body.storyId;
+    const storyIdNum = parseInt(String(storyIdRaw), 10);
+    const userIdNum = parseInt(String(payload.userId), 10);
+
+    if (!storyIdRaw || Number.isNaN(storyIdNum)) {
       return NextResponse.json({ error: 'Story ID is required' }, { status: 400 });
     }
+    if (Number.isNaN(userIdNum)) {
+      return NextResponse.json({ error: 'Invalid user' }, { status: 401 });
+    }
+
     const existingLike = await prisma.storyLike.findUnique({
       where: {
         userId_storyId: {
-          userId: parseInt(payload.userId),
-          storyId: storyId,
+          userId: userIdNum,
+          storyId: storyIdNum,
         },
       },
     });
@@ -57,8 +64,8 @@ export async function POST(request: NextRequest) {
       await prisma.storyLike.delete({
         where: {
           userId_storyId: {
-            userId: parseInt(payload.userId),
-            storyId: storyId,
+            userId: userIdNum,
+            storyId: storyIdNum,
           },
         },
       });
@@ -66,8 +73,8 @@ export async function POST(request: NextRequest) {
     } else {
       await prisma.storyLike.create({
         data: {
-          userId: parseInt(payload.userId),
-          storyId: storyId,
+          userId: userIdNum,
+          storyId: storyIdNum,
         },
       });
       return NextResponse.json({ liked: true });
