@@ -1,5 +1,5 @@
 import { Heart } from "lucide-react";
-import SavePostButton from "@/src/modules/save-posts/components/common/SavePostButton";
+// import SavePostButton from "@/src/modules/save-posts/components/common/SavePostButton";
 import { useRelativeTime } from "@/src/modules/posts/hooks/useRelativeTime";
 
 interface Post {

@@ -1,7 +1,7 @@
 "use client";
 
 import { Heart, MessageCircle, Send } from "lucide-react";
-import SavePostButton from "@/src/modules/save-posts/components/common/SavePostButton";
+// import SavePostButton from "@/src/modules/save-posts/components/common/SavePostButton";
 import { usePostLike } from "@/src/modules/posts-details-page/hooks/usePostLike";
 import { useRelativeTime } from "../../hooks/useRelativeTime";
 import { useFollowMutation } from "@/src/modules/follow/hooks/mutations/useFollowMutation";
@@ -93,7 +93,7 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
   const imageUrls = getImageUrls(post.imageUrl);
 
   return (
-    <div className="text-white rounded-lg overflow-hidden w-117.5 mx-auto">
+    <div className="text-white rounded-lg overflow-hidden w-full sm:w-117.5 sm:mx-auto">
       <div className="flex items-center justify-between p-3">
         <div className="flex items-center gap-3">
           <div className="relative w-8 h-8">
@@ -280,11 +280,11 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
             </button>
           </div>
 
-          <SavePostButton
+          {/* <SavePostButton
             postId={post.id}
             isSaved={post.isSaved}
             onSaveChange={(isSaved) => {}}
-          />
+          /> */}
         </div>
 
         <p className=" mt-0.5 line-clamp-2">
