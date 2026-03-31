@@ -155,7 +155,6 @@ wss.on("connection", (ws, req) => {
           });
           replyToText = repliedMsg?.text ?? null;
         }
-
         const msg = await prisma.message.create({
           data: { senderId: userId, receiverId, text: body.trim() },
         });

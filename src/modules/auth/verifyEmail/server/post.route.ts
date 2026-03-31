@@ -6,7 +6,7 @@ const app = new Hono();
 
 app.post("/api/auth/verify-email", async (c) => {
   try {
-    const body = await c.req.text();
+    const body = await c.req.json();
 
     if (!body) {
       return c.json({ error: "Request body is empty" }, 400);

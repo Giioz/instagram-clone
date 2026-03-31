@@ -1,7 +1,6 @@
 "use client";
 
 import { useVerifyEmailForm } from "@/src/modules/auth/verifyEmail/hooks/useVerifyEmailForm";
-import Link from "next/link";
 import FormInputs from "@/src/modules/auth/components/FormInputs";
 
 export default function VerifyEmailForm() {
@@ -26,7 +25,7 @@ export default function VerifyEmailForm() {
           )}
 
           <form className="space-y-5 w-full" onSubmit={handleSubmit}>
-            <label className="text-[17px] font-medium mb-1.25 block leading-[22px]">
+            <label className="text-[17px] font-medium mb-1.25 block leading-5.5">
               Verification code
             </label>
             <FormInputs
