@@ -8,13 +8,15 @@ export default function Home() {
     <div className="flex">
       <div className="flex-1 flex justify-center">
         <div className="flex gap-20 mx-auto p-5">
-          <div className="w-157.5">
+          <div className="w-full md:w-157.5">
             <Stories />
             <div className="mt-6">
               <PostsFeed />
             </div>
           </div>
-          <div className="w-79.75">{/* Right side content */}</div>
+          <div className="hidden xl:block w-79.75">
+            {/* Right side content */}
+          </div>
         </div>
       </div>
     </div>
