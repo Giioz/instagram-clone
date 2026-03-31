@@ -1,8 +1,8 @@
 import type { ChatMessageDTO, ChatUserBrief } from "@/src/modules/chat/types";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import MessageOptionsModal from "./MessageOptionsModal";
-import EmojiPickerModal from "./EmojiPickerModal";
+import { useReactionPicker } from "@/src/modules/chat/reaction";
 
 interface MessageListProps {
   listRef: React.RefObject<HTMLDivElement | null>;
@@ -29,59 +29,13 @@ export default function MessageList({
   const [selectedMessage, setSelectedMessage] = useState<ChatMessageDTO | null>(null);
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
   const [modalIsMine, setModalIsMine] = useState(false);
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [emojiPickerAnchor, setEmojiPickerAnchor] = useState<DOMRect | null>(null);
-  const [emojiTargetId, setEmojiTargetId] = useState<number | null>(null);
-  const [emojiPickerIsMine, setEmojiPickerIsMine] = useState(false);
-  const [messageReactions, setMessageReactions] = useState<Record<number, { emoji: string; isMine: boolean; count: number; users: any[] }>>({});
-
-  useEffect(() => {
-    const loadReactions = async () => {
-      if (!myId || messages.length === 0) return;
-
-      try {
-        const messageIds = messages.map((m) => m.id).join(",");
-        const response = await fetch(`/api/chat/reactions?messageIds=${messageIds}`, {
-          credentials: "include",
-        });
-        if (!response.ok) return;
-
-        const allReactions: any[][] = await response.json();
-        const reactionsMap: Record<
-          number,
-          { emoji: string; isMine: boolean; count: number; users: any[] }
-        > = {};
-
-        allReactions.forEach((group) => {
-          group.forEach((reaction: any) => {
-            const messageId = reaction.messageId as number;
-            if (messageId == null) return;
-
-            if (!reactionsMap[messageId]) {
-              reactionsMap[messageId] = {
-                emoji: reaction.emoji,
-                isMine: reaction.userId === myId,
-                count: 0,
-                users: [],
-              };
-            }
-            reactionsMap[messageId].count += 1;
-            reactionsMap[messageId].users.push(reaction.user);
-            if (reaction.userId === myId) {
-              reactionsMap[messageId].emoji = reaction.emoji;
-              reactionsMap[messageId].isMine = true;
-            }
-          });
-        });
-
-        setMessageReactions(reactionsMap);
-      } catch (error) {
-        console.error("Failed to load reactions:", error);
-      }
-    };
-
-    loadReactions();
-  }, [messages, myId]);
+  const {
+    messageReactions,
+    openEmojiPicker,
+    showEmojiPicker,
+    emojiTargetId,
+    EmojiPickerComponent,
+  } = useReactionPicker(messages, myId);
 
   if (loadingMessages) return <div className="p-4 text-gray-400">Loading messages...</div>;
   if (threadLoadError) return <div className="p-4 text-red-500">{threadLoadError}</div>;
@@ -106,66 +60,6 @@ export default function MessageList({
     closeModal();
   };
 
-  const openEmojiPicker = (e: React.MouseEvent<HTMLButtonElement>, messageId: number, mine: boolean) => {
-    setEmojiPickerAnchor(e.currentTarget.getBoundingClientRect());
-    setEmojiTargetId(messageId);
-    setEmojiPickerIsMine(mine);
-    setShowEmojiPicker(true);
-  };
-
-  const closeEmojiPicker = () => {
-    setShowEmojiPicker(false);
-    setEmojiPickerAnchor(null);
-    setEmojiTargetId(null);
-  };
-
-  // ✅ Optimistic update: UI updates immediately, API syncs in background
-  const handleEmojiSelect = (emoji: string, _messageFromMe: boolean) => {
-    if (emojiTargetId == null || myId == null) return;
-
-    const targetId = emojiTargetId; // capture before closeEmojiPicker nulls it
-    const existingReaction = messageReactions[targetId];
-
-    if (existingReaction && existingReaction.emoji === emoji) {
-      // Same emoji → remove
-      setMessageReactions((prev) => {
-        const next = { ...prev };
-        delete next[targetId];
-        return next;
-      });
-      closeEmojiPicker();
-
-      fetch("/api/chat/reactions", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messageId: targetId }),
-        credentials: "include",
-      }).catch((err) => console.error("Failed to delete reaction:", err));
-    } else {
-      // New or changed emoji → add/update
-      setMessageReactions((prev) => ({
-        ...prev,
-        [targetId]: {
-          emoji,
-          isMine: true,
-          count: prev[targetId]?.count ?? 1,
-          users: prev[targetId]?.users || [],
-        },
-      }));
-      closeEmojiPicker();
-
-      fetch("/api/chat/reactions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messageId: targetId,
-          emoji,
-        }),
-        credentials: "include",
-      }).catch((err) => console.error("Failed to save reaction:", err));
-    }
-  };
-
   const closeModal = () => {
     setShowMessageModal(false);
     setTimeout(() => setSelectedMessage(null), 0);
@@ -185,12 +79,18 @@ export default function MessageList({
   };
 
   const ActionButtons = ({ m, mine }: { m: ChatMessageDTO; mine: boolean }) => {
-    const isActiveMessage = showMessageModal && selectedMessage?.id === m.id;
+    const isThisMessageActive =
+      (showMessageModal && selectedMessage?.id === m.id) ||
+      (showEmojiPicker && emojiTargetId === m.id);
+    const isAnyModalOpen = showEmojiPicker || showMessageModal;
+
     return (
       <div
         className={`flex flex-row items-center gap-1 transition-all duration-200 ease-out ${
-          isActiveMessage
+          isThisMessageActive
             ? "opacity-100 translate-y-0"
+            : isAnyModalOpen
+            ? "opacity-0 pointer-events-none"
             : "opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0"
         } ${mine ? "mr-2" : "ml-2"}`}
       >
@@ -294,30 +194,29 @@ export default function MessageList({
                 )}
 
                 <div className={`relative flex flex-col max-w-[70%] ${mine ? "items-end" : "items-start"}`}>
-                  <div className={`relative min-w-0 wrap-break-word px-3 py-2 text-[15px] font-normal ${bubbleRadius} ${mine ? "bg-[#4a5df9] text-white" : "bg-[#25292e] text-white"}`}>
-                    <span className="text-[15px] break-all">{m.text}</span>
+        <div
+          className={`relative min-w-0 break-words mt-1       px-3 py-2 text-[15px] font-normal ${bubbleRadius} ${
+      mine ? "bg-[#4a5df9] text-white" : "bg-[#25292e] text-white"
+            }`}
+  >
+               <span className="text-[15px] break-all">{m.text}</span>
 
-                    {reaction && (
-                      <div
-                        className={`absolute -bottom-4 flex items-center gap-1 px-2 py-1 rounded-full bg-[#2a2a2a] border-2 border-black shadow-md hover:scale-110 transition-transform ${
-                          mine ? "-right-1" : "-left-1"
-                        }`}
-                        onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                          e.stopPropagation();
-                          openEmojiPicker(e as any, m.id, mine);
-                        }}
-                        title={`${reaction.count} reaction${reaction.count > 1 ? 's' : ''}: ${reaction.users.map(u => u.username).join(', ')}`}
-                      >
-                        <span className="text-base">{reaction.emoji}</span>
-                        {reaction.count > 1 && (
-                          <span className="text-xs bg-blue-500 text-white rounded-full px-1.5 py-0.5 ml-1">
-                            {reaction.count}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
+    {reaction && (
+      <div
+        className={`absolute -bottom-4 flex h-[22px] items-center justify-center gap-1 rounded-[11px] border-2 border-[rgb(12,16,20)] bg-[rgb(38,38,38)] px-[6px] text-[15px] text-[rgb(245,245,245)] transition-transform hover:scale-110 cursor-pointer select-none ${
+                   mine ? "-right-1" : "-left-1"
+        }`}
+        onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                  e.stopPropagation();
+          openEmojiPicker(e as any, m.id, mine);
+        }}
+        title={`${reaction.users.map((u) => u.username).join(", ")}`}
+      >
+        <span className="leading-none">{reaction.emoji}</span>
+      </div>
+    )}
+  </div>
+</div>
 
                 <ActionButtons m={m} mine={mine} />
               </div>
@@ -336,14 +235,7 @@ export default function MessageList({
         onForwardMessage={handleForwardMessage}
       />
 
-      <EmojiPickerModal
-        isOpen={showEmojiPicker}
-        onClose={closeEmojiPicker}
-        onEmojiSelect={handleEmojiSelect}
-        anchorRect={emojiPickerAnchor}
-        isMine={emojiPickerIsMine}
-        currentReaction={emojiTargetId ? messageReactions[emojiTargetId]?.emoji : undefined}
-      />
+      <EmojiPickerComponent />
     </>
   );
 }
