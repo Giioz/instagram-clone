@@ -15,12 +15,13 @@ export async function GET(request: NextRequest) {
 
     const user = await prisma.user.findUnique({
       where: { id: parseInt(payload.userId, 10) },
-      select: { imageUrl: true },
+      select: { imageUrl: true, name: true },
     });
 
     return NextResponse.json({
       ...payload,
       imageUrl: user?.imageUrl || null,
+      name: user?.name ?? null,
     });
   } catch (error) {
     console.error("Get current user error:", error);
