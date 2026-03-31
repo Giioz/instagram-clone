@@ -1,62 +1,80 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface UsePostLikeProps {
   postId: number;
   initialLikes: number;
 }
+const fetchLikeStatus = async (postId: number): Promise<{ isLiked: boolean; likes: number }> => {
+  const response = await fetch(`/api/posts/${postId}/like-status`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch like status");
+  }
+  return response.json();
+};
+
+const togglePostLike = async (postId: number): Promise<{ isLiked: boolean; likes: number }> => {
+  const response = await fetch(`/api/posts/${postId}/like`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to toggle like");
+  }
+
+  return response.json();
+};
 
 export function usePostLike({ postId, initialLikes }: UsePostLikeProps) {
-  const [likes, setLikes] = useState(initialLikes);
-  const [isLiked, setIsLiked] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    // Check if current user liked this post
-    const checkLikeStatus = async () => {
-      try {
-        const response = await fetch(`/api/posts/${postId}/like-status`);
-        if (response.ok) {
-          const data = await response.json();
-          setIsLiked(data.isLiked);
-        }
-      } catch (error) {
-        console.error("Failed to check like status:", error);
+  const {
+    data: likeData = { isLiked: false, likes: initialLikes },
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["postLikeStatus", postId],
+    queryFn: () => fetchLikeStatus(postId),
+    initialData: { isLiked: false, likes: initialLikes },
+  });
+
+  const likeMutation = useMutation({
+    mutationFn: () => togglePostLike(postId),
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ["postLikeStatus", postId] });
+      const previousData = queryClient.getQueryData(["postLikeStatus", postId]);
+      
+      queryClient.setQueryData(["postLikeStatus", postId], (old: any) => ({
+        isLiked: !old.isLiked,
+        likes: old.isLiked ? old.likes - 1 : old.likes + 1,
+      }));
+      
+      return { previousData };
+    },
+    onError: (err, variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(["postLikeStatus", postId], context.previousData);
       }
-    };
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["postLikeStatus", postId] });
+    },
+  });
 
-    checkLikeStatus();
-  }, [postId]);
-
-  const toggleLike = async () => {
-    if (isLoading) return;
-
-    setIsLoading(true);
-    try {
-      const response = await fetch(`/api/posts/${postId}/like`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setLikes(data.likes);
-        setIsLiked(data.isLiked);
-      }
-    } catch (error) {
-      console.error("Failed to toggle like:", error);
-    } finally {
-      setIsLoading(false);
-    }
+  const toggleLike = () => {
+    if (likeMutation.isPending) return;
+    likeMutation.mutate();
   };
 
   return {
-    likes,
-    isLiked,
-    isLoading,
+    likes: likeData.likes,
+    isLiked: likeData.isLiked,
+    isLoading: isLoading || likeMutation.isPending,
+    error: error?.message || likeMutation.error?.message || null,
     toggleLike,
   };
 }
