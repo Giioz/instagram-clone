@@ -46,8 +46,10 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "prisma": "^7.4.2",
+    "resend": "^6.10.0",
     "tailwindcss": "^4",
     "tsx": "^4.19.3",
+    "types": "^0.1.1",
     "typescript": "^5"
   }
 }

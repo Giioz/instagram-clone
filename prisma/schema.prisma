@@ -19,6 +19,9 @@ model User {
   gender     Gender      @default(PREFER_NOT_TO_SAY)
   imageUrl   String?
   website    String?
+
+  emailVerified Boolean     @default(false)
+
   posts      Post[]
   comments   Comment[]
   commentLikes CommentLike[]
@@ -213,4 +216,11 @@ enum Gender {
   FEMALE
   CUSTOM
   PREFER_NOT_TO_SAY
+}
+
+model VerifyEmail {
+  id        String   @id @default(uuid())
+  userEmail String   @unique
+  code      Int
+  expiresAt DateTime
 }
