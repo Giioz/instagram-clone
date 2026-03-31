@@ -1,7 +1,7 @@
 "use client";
 
 import { Heart, MessageCircle, Send } from "lucide-react";
-import SavePostButton from "@/src/modules/save-posts/components/common/SavePostButton";
+// import SavePostButton from "@/src/modules/save-posts/components/common/SavePostButton";
 import { usePostLike } from "@/src/modules/posts-details-page/hooks/usePostLike";
 import { useRelativeTime } from "../../hooks/useRelativeTime";
 import { useFollowMutation } from "@/src/modules/follow/hooks/mutations/useFollowMutation";
