@@ -1,4 +1,4 @@
-import { X, Trash2 } from "lucide-react";
+import { X, MoreHorizontal, Trash2 } from "lucide-react";
 import Link from "next/link";
 import type { User, Story } from "@prisma/client";
 import type { JWTPayload } from "@/src/lib/auth";
@@ -59,23 +59,25 @@ export default function StoryHeader({
         <div className="flex items-center gap-3 max-md:gap-4">
           <Link 
             href={`/profile/${currentUser?.username || ""}`}
-            className="w-10 h-10 rounded-full bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)] p-0.5 max-md:w-12 max-md:h-12 hover:opacity-80 transition cursor-pointer"
+            className="flex items-center gap-3 max-md:gap-4"
           >
-            <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center">
-              <span className="text-white text-sm font-semibold max-md:text-base">
-                {currentUser?.username?.charAt(0)?.toUpperCase() || ""}
-              </span>
+            <div className="w-10 h-10 rounded-full bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)] p-0.5 max-md:w-12 max-md:h-12 hover:opacity-80 transition cursor-pointer">
+              <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center">
+                <span className="text-white text-sm font-semibold max-md:text-base">
+                  {currentUser?.username?.charAt(0)?.toUpperCase() || ""}
+                </span>
+              </div>
+            </div>
+            <div>
+              <p className="text-white font-semibold max-md:text-lg">
+                {currentUser?.username || ""}
+              </p>
+              <p className="text-gray-300 text-[14px] max-md:text-base">
+                {getTimeAgo(new Date(currentStory.createdAt))}
+              </p>
             </div>
           </Link>
-          <div>
-            <p className="text-white font-semibold max-md:text-lg">
-              {currentUser?.username || ""}
-            </p>
-            <p className="text-gray-300 text-[14px] max-md:text-base">
-              {getTimeAgo(new Date(currentStory.createdAt))}
-            </p>
-          </div>
-        </Link>
+        </div>
         <div className="flex items-center ">
           {/* MUTE */}
           {/* <button 

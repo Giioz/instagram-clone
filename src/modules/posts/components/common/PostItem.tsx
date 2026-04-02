@@ -5,12 +5,18 @@ import SavePostButton from "@/src/modules/save-posts/components/common/SavePostB
 import { usePostLike } from "@/src/modules/posts-details-page/hooks/usePostLike";
 import { useRelativeTime } from "../../hooks/useRelativeTime";
 import { useFollowMutation } from "@/src/modules/follow/hooks/mutations/useFollowMutation";
+import { useFollowStats } from "@/src/modules/follow/hooks/queries/useFollowStats";
 import { User } from "@prisma/client";
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import PostOptionsModal from "./PostOptionsModal";
 import CommentModal from "@/src/modules/comment/component/common/CommentModal";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 interface Post {
   id: number;
@@ -18,6 +24,7 @@ interface Post {
   content: string;
   imageUrl: string | null;
   likes: number;
+  commentsDisabled?: boolean;
   createdAt: Date;
   updatedAt: Date;
   user: {
@@ -46,20 +53,29 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
   });
   const { getRelativeTime } = useRelativeTime();
   const { follow, unfollow } = useFollowMutation();
+  const { data: followStats } = useFollowStats(post.user.id.toString());
+  const isFollowing = followStats?.isFollowing || post.isFollowing || false;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
-
+  
   const handleFollow = async () => {
-    if (post.isFollowing) {
-      await unfollow.mutateAsync({ followingId: post.user.id.toString() });
+    if (isFollowing) {
+      unfollow.mutate({ followingId: post.user.id.toString() });
     } else {
-      await follow.mutateAsync({ followingId: post.user.id.toString() });
+      follow.mutate({ followingId: post.user.id.toString() });
     }
   };
 
+  const handleFollowFromModal = () => {
+    if (!isFollowing) {
+      follow.mutate({ followingId: post.user.id.toString() });
+    }
+    setIsModalOpen(false);
+  };
+
   const handleUnfollowFromModal = () => {
-    if (post.isFollowing) {
-      unfollow.mutateAsync({ followingId: post.user.id.toString() });
+    if (isFollowing) {
+      unfollow.mutate({ followingId: post.user.id.toString() });
     }
     setIsModalOpen(false);
   };
@@ -86,6 +102,9 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
       const parsed = JSON.parse(imageUrl);
       return Array.isArray(parsed) ? parsed : [imageUrl];
     } catch {
+      if (imageUrl.includes(',')) {
+        return imageUrl.split(',').map(url => url.trim()).filter(url => url);
+      }
       return [imageUrl];
     }
   };
@@ -120,7 +139,7 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {currentUser && currentUser.id !== post.user.id && (
+          {currentUser && currentUser.id !== post.user.id && !isFollowing && (
             <button
               onClick={handleFollow}
               disabled={follow.isPending || unfollow.isPending}
@@ -144,10 +163,8 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     />
                   </svg>
-                  {post.isFollowing ? "Following" : "Follow"}
+                  Follow
                 </span>
-              ) : post.isFollowing ? (
-                "Following"
               ) : (
                 "Follow"
               )}
@@ -163,7 +180,7 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
         </div>
       </div>
       {imageUrls.length > 0 && (
-        <div className="w-full object-cover ">
+        <div className="w-full">
           {imageUrls.length === 1 ? (
             <div className="w-full max-h-157.5 rounded-sm border border-[#262626] overflow-hidden flex justify-center">
               <Image
@@ -175,28 +192,25 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
               />
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-0.5">
-              {imageUrls.slice(0, 4).map((url, index) => (
-                <div
-                  key={index}
-                  className="relative w-full h-75 overflow-hidden"
-                >
-                  <Image
-                    src={url}
-                    alt={`post ${index + 1}`}
-                    fill
-                    className="object-cover"
-                  />
-                  {index === 3 && imageUrls.length > 4 && (
-                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                      <span className="text-white text-2xl font-bold">
-                        +{imageUrls.length - 4}
-                      </span>
-                    </div>
-                  )}
-                </div>
+            <Swiper
+              modules={[Navigation, Pagination]}
+              navigation
+              pagination={{ clickable: true }}
+              className="w-full max-h-[600px] rounded-sm border border-[#262626]"
+            >
+              {imageUrls.map((url, index) => (
+                <SwiperSlide key={index}>
+                  <div className="relative w-full h-[500px] flex items-center justify-center bg-black">
+                    <Image
+                      src={url}
+                      alt={`post ${index + 1}`}
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                </SwiperSlide>
               ))}
-            </div>
+            </Swiper>
           )}
         </div>
       )}
@@ -301,7 +315,7 @@ export default function PostItem({ post, currentUser }: PostItemProps) {
         onGoToPost={handleGoToPost}
         onAboutAccount={handleAboutAccount}
         showUnfollow={
-          !!(currentUser && currentUser.id !== post.user.id && post.isFollowing)
+          !!(currentUser && currentUser.id !== post.user.id && isFollowing)
         }
         user={post.user}
       />

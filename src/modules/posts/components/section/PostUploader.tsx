@@ -12,9 +12,14 @@ export function PostUploader({ onUpload }: PostUploaderProps) {
   const [isUploading, setIsUploading] = useState(false);
 
   return (
-    <div className="post-uploader">
+    <div className="post-uploader [&_input[type='file']]:hidden [&_.ut-button]:w-auto">
       <UploadButton
+        className="custom-upload-btn"
         endpoint="postUploader"
+        content={{
+          button: "Select from computer",
+          allowedContent: null,
+        }}
         onClientUploadComplete={async (res) => {
           if (res && res[0]) {
             await onUpload(res[0].url);
@@ -37,8 +42,12 @@ export function PostUploader({ onUpload }: PostUploaderProps) {
             borderRadius: '8px',
             fontSize: '14px',
             fontWeight: '600',
-            height: '31.9886px',
-            width: '178.8px',
+            border: 'none',
+            cursor: 'pointer',
+            textDecoration: 'none',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           },
           container: {
             display: 'flex',

@@ -16,7 +16,7 @@ import { useState } from "react";
 
 interface ProfileHeaderProps {
   user: UserProfile;
-}e
+}
 
 export default function ProfileHeader({ user }: ProfileHeaderProps) {
   const { data: currentUser } = useCurrentUser();
@@ -121,7 +121,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                 profileUsername={user.username}
               />
 
-              <MessageButton />
+              <MessageButton username={user.username} />
             </>
           )}
         </div>

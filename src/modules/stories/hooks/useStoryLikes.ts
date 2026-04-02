@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import type { User, Story } from "@prisma/client";
+import type { Story } from "@prisma/client";
+import type { JWTPayload } from "@/src/lib/auth";
 
 interface StoryLike {
   id: number;
@@ -14,11 +15,17 @@ interface StoryLike {
 }
 
 interface UseStoryLikesProps {
-  currentUser: User;
+  viewer: JWTPayload | null;
   currentStory: Story | null;
 }
 
-export function useStoryLikes({ currentUser, currentStory }: UseStoryLikesProps) {
+function viewerId(viewer: JWTPayload | null): number | null {
+  if (!viewer?.userId) return null;
+  const id = parseInt(String(viewer.userId), 10);
+  return Number.isFinite(id) ? id : null;
+}
+
+export function useStoryLikes({ viewer, currentStory }: UseStoryLikesProps) {
   const [likes, setLikes] = useState<StoryLike[]>([]);
   const [isLiked, setIsLiked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,27 +33,35 @@ export function useStoryLikes({ currentUser, currentStory }: UseStoryLikesProps)
 
   const fetchLikeStatus = useCallback(async () => {
     if (!currentStory) return;
-    
+
+    const me = viewerId(viewer);
+
     try {
-      const response = await fetch(`/api/stories/like?storyId=${currentStory.id}`);
+      const response = await fetch(
+        `/api/stories/like?storyId=${currentStory.id}`,
+        { credentials: "include" }
+      );
       if (response.ok) {
         const data = await response.json();
         setLikes(data.likes || []);
-        setIsLiked(data.likes?.some((like: StoryLike) => like.userId === currentUser.id) || false);
+        setIsLiked(
+          me !== null &&
+            (data.likes?.some((like: StoryLike) => like.userId === me) || false)
+        );
       }
     } catch (error) {
       console.error("Error fetching story likes:", error);
       setError("Failed to load likes");
     }
-  }, [currentStory, currentUser.id]);
+  }, [currentStory, viewer]);
 
   useEffect(() => {
     fetchLikeStatus();
   }, [fetchLikeStatus]);
 
   const handleLike = async () => {
-    if (!currentStory || isLoading) return;
-    
+    if (!currentStory || isLoading || !viewer) return;
+
     const newIsLiked = !isLiked;
     setIsLiked(newIsLiked);
     setIsLoading(true);
@@ -58,6 +73,7 @@ export function useStoryLikes({ currentUser, currentStory }: UseStoryLikesProps)
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ storyId: currentStory.id }),
       });
 

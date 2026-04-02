@@ -2,20 +2,13 @@ import { notFound } from "next/navigation";
 import { verifyTokenString } from "@/src/lib/auth";
 import type { JWTPayload } from "@/src/lib/auth";
 import { cookies } from "next/headers";
-import { getUserProfile, ProfileHeader, ProfilePosts } from "@/src/modules/user-profile";
+import { getUserProfile } from "@/src/modules/user-profile/services/getUserProfile";
+import ProfileHeader from "./ProfileHeader";
 
-interface ProfilePageProps {
-  params: Promise<{
-    username: string;
-  }>;
-}
-
-export default async function ProfilePage({ 
-  params, 
-  searchParams 
-}: { 
+export default async function ProfilePage({
+  params,
+}: {
   params: Promise<{ username: string }>;
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { username } = await params;
 

@@ -2,3 +2,58 @@
 
 @import "swiper/css";
 @import "swiper/css/navigation";
+@import "swiper/css/pagination";
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #1f2937 !important; 
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(6px); 
+  -webkit-backdrop-filter: blur(6px);
+  width: 23px !important;
+  height: 23px !important;
+  border-radius: 50%;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-weight: bold;
+  padding: 4px !important;
+}
+.swiper-pagination-bullet {
+  background: white !important;
+  opacity: 0.5;
+  width: 6px !important;
+  height: 6px !important;
+  margin: 0 2px !important;
+}
+
+.swiper-pagination-bullet-active {
+  opacity: 1;
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}
