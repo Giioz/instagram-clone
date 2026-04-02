@@ -83,7 +83,6 @@ export function useStoryLikes({ viewer, currentStory }: UseStoryLikesProps) {
         throw new Error("Failed to toggle like");
       }
 
-      // Refetch likes to get updated state
       await fetchLikeStatus();
     } catch (error) {
       console.error("Error toggling story like:", error);

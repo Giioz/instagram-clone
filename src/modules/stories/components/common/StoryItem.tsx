@@ -41,22 +41,40 @@ export default function StoryItem({ groupedStory, onClick, currentUser }: StoryI
                   <div className="absolute inset-0 bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)]0"></div>
                 )}
                 <div className="absolute inset-0 bg-gray-900 rounded-full overflow-hidden">
-                  <Image
-                    src={latestStory.mediaUrl}
-                    alt={`${user.username}'s story`}
-                    fill
-                    className="rounded-full object-cover border-2 border-black"
-                  />
+                  {user.imageUrl ? (
+                    <Image
+                      src={user.imageUrl}
+                      alt={`${user.username}'s profile`}
+                      fill
+                      className="rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center">
+                      <span className="text-white text-sm font-semibold">
+                        {user.username.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
             {!hasMultipleStories && (
-              <Image
-                src={latestStory.mediaUrl}
-                alt={`${user.username}'s story`}
-                fill
-                className="rounded-full object-cover border-2 border-black"
-              />
+              <div className="absolute inset-0 bg-gray-900 rounded-full overflow-hidden">
+                {user.imageUrl ? (
+                  <Image
+                    src={user.imageUrl}
+                    alt={`${user.username}'s profile`}
+                    fill
+                    className="rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center">
+                    <span className="text-white text-sm font-semibold">
+                      {user.username.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </StoryCircle>
