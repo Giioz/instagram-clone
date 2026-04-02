@@ -7,6 +7,8 @@ export interface JWTPayload {
   userId: string;
   email: string;
   username: string;
+  name?: string | null;
+  imageUrl?: string | null;
 }
 
 export function verifyToken(request: NextRequest): JWTPayload | null {
