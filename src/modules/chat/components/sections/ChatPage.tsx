@@ -11,7 +11,8 @@ import { useChatPageState } from "@/src/modules/chat/hooks/useChatPageState";
 import { useChatPageEffects } from "@/src/modules/chat/hooks/useChatPageEffects";
 import { useChatPageActions } from "@/src/modules/chat/hooks/useChatPageActions";
 import { mergeInbox, type InboxRow } from "@/src/modules/chat/utils/mergeInbox";
-import type { ChatUserBrief } from "@/src/modules/chat/types";
+import type { ChatUserBrief, ChatMessageDTO } from "@/src/modules/chat/types";
+import { useState, useEffect } from "react";
 import ChatHeader from "@/src/modules/chat/components/sections/ChatHeader";
 import ChatInput from "@/src/modules/chat/components/common/ChatInput";
 import MessageList from "@/src/modules/chat/components/common/MessageList";
@@ -101,15 +102,30 @@ export const ChatLayout = ({
   } = useChatPageState();
 
   const socketEnabled = true;
+  const [localMessages, setLocalMessages] = useState<ChatMessageDTO[]>([]);
+  
   const {
-    data: messages,
+    data: serverMessages,
     isLoading: loadingMessages,
     error: messagesQueryError,
     refetch: refetchMessages,
   } = usePeerMessages(selectedPeer?.id || null, socketEnabled);
+  
+  // Sync server messages with local state
+  useEffect(() => {
+    if (serverMessages) {
+      setLocalMessages(serverMessages);
+    }
+  }, [serverMessages]);
+  
+  const messages = localMessages;
   const threadLoadError = messagesQueryError
     ? String(messagesQueryError.message)
     : null;
+  
+  const handleMessageDeleted = (messageId: number) => {
+    setLocalMessages((prev: ChatMessageDTO[]) => prev.filter((msg: ChatMessageDTO) => msg.id !== messageId));
+  };
 
   const { onInputChange, onSend } = useChatPageActions({
     selectedPeer,
@@ -169,6 +185,7 @@ export const ChatLayout = ({
                 myId={myId}
                 selectedPeer={selectedPeer}
                 setReplyTo={setReplyTo}
+                onMessageDeleted={handleMessageDeleted}
               />
 
               <ReplyBar

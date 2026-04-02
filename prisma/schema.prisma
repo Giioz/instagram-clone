@@ -19,6 +19,9 @@ model User {
   gender     Gender      @default(PREFER_NOT_TO_SAY)
   imageUrl   String?
   website    String?
+
+  emailVerified Boolean     @default(false)
+
   posts      Post[]
   comments   Comment[]
   commentLikes CommentLike[]
@@ -32,6 +35,7 @@ model User {
   sentMessages     Message[]   @relation("MessageSender")
   receivedMessages Message[]   @relation("MessageReceiver")
   commentReplies   CommentReply[]
+  messageReactions MessageReaction[]
 }
 
 model Message {
@@ -45,10 +49,26 @@ model Message {
   receiver    User      @relation("MessageReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
   reply       MessageReply?
   repliedBy   MessageReply[] @relation("RepliesToMessage")
+  reactions   MessageReaction[]
 
   @@index([senderId, receiverId, createdAt])
   @@index([receiverId, readAt])
   @@index([receiverId, senderId])
+}
+
+model MessageReaction {
+  id          Int      @id @default(autoincrement())
+  messageId  Int
+  userId     Int
+  messageOwnerId Int
+  emoji      String
+  createdAt  DateTime @default(now())
+  
+  message    Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId]) // Only one reaction per user per message
+  @@index([messageId])
 }
 
 model Story {
@@ -196,4 +216,11 @@ enum Gender {
   FEMALE
   CUSTOM
   PREFER_NOT_TO_SAY
+}
+
+model VerifyEmail {
+  id        String   @id @default(uuid())
+  userEmail String   @unique
+  code      Int
+  expiresAt DateTime
 }

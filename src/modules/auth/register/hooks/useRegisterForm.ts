@@ -43,7 +43,7 @@ export function useRegisterForm() {
     },
     onSuccess: (data) => {
       console.log("Registration successful:", data);
-      router.push("/login");
+      router.push("/verify-email");
     },
     onError: (err) => {
       setError(err instanceof Error ? err.message : "An error occurred");

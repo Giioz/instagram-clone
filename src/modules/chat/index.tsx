@@ -1,10 +1,9 @@
-import { ChatPage, ChatLayout } from './components/sections/ChatPage';
-import ChatHeader from './components/sections/ChatHeader';
-import ChatSidebar from './components/sections/ChatSidebar';
-import AuthSection from './components/sections/AuthSection';
-import ChatInput from './components/common/ChatInput';
-import MessageList from './components/common/MessageList';
-import ReplyBar from './components/common/ReplyBar';
+import { ChatPage, ChatLayout } from "./components/sections/ChatPage";
+import ChatHeader from "./components/sections/ChatHeader";
+import ChatSidebar from "./components/sections/ChatSidebar";
+import ChatInput from "./components/common/ChatInput";
+import MessageList from "./components/common/MessageList";
+import ReplyBar from "./components/common/ReplyBar";
 
 export const ChatModule = () => {
   return (
@@ -19,7 +18,6 @@ export {
   ChatLayout,
   ChatHeader,
   ChatSidebar,
-  AuthSection,
   ChatInput,
   MessageList,
   ReplyBar,

@@ -14,7 +14,11 @@ interface UseChatPageActionsProps {
   setSelectedPeer: (peer: ChatUserBrief | null) => void;
   typingEmitTimer: React.MutableRefObject<ReturnType<typeof setTimeout> | null>;
   lastTypingSent: React.MutableRefObject<boolean>;
-  sendText: (receiverId: number, text: string, replyToId?: number | null) => boolean;
+  sendText: (
+    receiverId: number,
+    text: string,
+    replyToId?: number | null
+  ) => boolean;
   sendTyping: (receiverId: number, isTyping: boolean) => void;
   refetchMessages: () => void;
   socketStatus: string;
@@ -41,9 +45,11 @@ export function useChatPageActions({
     (peer: ChatUserBrief) => {
       setSelectedPeer(peer);
       setInput("");
-      router.replace(`/messages?with=${encodeURIComponent(peer.username)}`, { scroll: false });
+      router.replace(`/messages?with=${encodeURIComponent(peer.username)}`, {
+        scroll: false,
+      });
     },
-    [router, setInput, setSelectedPeer],
+    [router, setInput, setSelectedPeer]
   );
 
   const flushTypingFalse = useCallback(() => {
@@ -71,7 +77,7 @@ export function useChatPageActions({
         lastTypingSent.current = false;
       }, 2000);
     },
-    [selectedPeer, setInput, sendTyping, flushTypingFalse],
+    [selectedPeer, setInput, sendTyping, flushTypingFalse]
   );
 
   const onSend = useCallback(
@@ -87,7 +93,17 @@ export function useChatPageActions({
         void qc.invalidateQueries({ queryKey: ["chat-conversations"] });
       }
     },
-    [selectedPeer, input, replyTo, flushTypingFalse, sendText, setInput, setReplyTo, refetchMessages, qc],
+    [
+      selectedPeer,
+      input,
+      replyTo,
+      flushTypingFalse,
+      sendText,
+      setInput,
+      setReplyTo,
+      refetchMessages,
+      qc,
+    ]
   );
 
   return {

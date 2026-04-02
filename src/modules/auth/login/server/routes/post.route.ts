@@ -40,11 +40,14 @@ app.post('/api/auth/login', async (c) => {
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) return c.json({ errors: { password: "Invalid credentials" } }, 401);
 
+    if(!user.emailVerified) return c.json({ errors: { email: "Email not verified. Please check your inbox." } }, 403);
+
     const token = jwt.sign(
       { userId: user.id, email: user.email, username: user.username },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
+
     const response = c.json({
       message: "Login successful",
       user: {
