@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useProfile } from "@/src/modules/edit-profile/hooks/useProfile";
 import { useAuth } from "@/src/modules/auth/hooks/useAuth";
+import { useConversations } from "@/src/modules/chat/hooks/useChatData";
 import { CreatePostModal } from "@/src/modules/posts/components/common/CreatePostModal";
 
 const mainItems = [
@@ -225,6 +226,11 @@ export default function Sidebar() {
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
+  const { data: chatConversations } = useConversations(!!user);
+  const totalChatUnread = useMemo(
+    () => chatConversations?.reduce((s, c) => s + c.unread, 0) ?? 0,
+    [chatConversations],
+  );
   const { imageUrl, profile } = useProfile();
   const sidebarRef = useRef<HTMLDivElement>(null);
 
@@ -305,7 +311,9 @@ export default function Sidebar() {
         } else if (item.label === "Profile") {
           goToMyProfile();
         } else if (item.label === "Home") {
-          router.push("/"); 
+          router.push("/");
+        } else if (item.label === "Messages") {
+          router.push("/messages");
         } else if (item.label === "Post") {
           setShowCreatePostModal(true);
         } else {
@@ -315,6 +323,11 @@ export default function Sidebar() {
     >
       <div className="relative">
         <item.icon />
+        {item.label === "Messages" && totalChatUnread > 0 && (
+          <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-sky-600 px-1 text-[9px] font-bold leading-none text-white">
+            {totalChatUnread > 99 ? "99+" : totalChatUnread}
+          </span>
+        )}
       </div>
 
       <span className="opacity-0 group-hover:opacity-100 whitespace-nowrap transition">

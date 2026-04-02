@@ -39,7 +39,10 @@ function usernameLookupCandidates(raw: string): string[] {
   return [...seen];
 }
 
-export async function getUserProfile(usernameParam: string, currentUser: JWTPayload | null) {
+export async function getUserProfile(
+  usernameParam: string,
+  currentUser: JWTPayload | null
+) {
   const candidates = usernameLookupCandidates(usernameParam);
   if (candidates.length === 0) {
     return null;
@@ -64,7 +67,7 @@ export async function getUserProfile(usernameParam: string, currentUser: JWTPayl
           createdAt: true,
         },
         orderBy: {
-          createdAt: 'desc',
+          createdAt: "desc",
         },
       },
       _count: {

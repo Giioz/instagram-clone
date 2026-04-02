@@ -39,7 +39,7 @@ export function useStoryLikes({ viewer, currentStory }: UseStoryLikesProps) {
     try {
       const response = await fetch(
         `/api/stories/like?storyId=${currentStory.id}`,
-       
+        { credentials: "include" }
       );
       if (response.ok) {
         const data = await response.json();
@@ -73,6 +73,7 @@ export function useStoryLikes({ viewer, currentStory }: UseStoryLikesProps) {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ storyId: currentStory.id }),
       });
 

@@ -19,6 +19,9 @@ model User {
   gender     Gender      @default(PREFER_NOT_TO_SAY)
   imageUrl   String?
   website    String?
+
+  emailVerified Boolean     @default(false)
+
   posts      Post[]
   comments   Comment[]
   commentLikes CommentLike[]
@@ -27,8 +30,45 @@ model User {
   storyLikes StoryLike[]
   postLikes  PostLike[]
   storySeens StorySeen[]
-  followers  Follow[]    @relation("UserFollowers")
-  following  Follow[]    @relation("UserFollowing")
+  followers        Follow[]    @relation("UserFollowers")
+  following        Follow[]    @relation("UserFollowing")
+  sentMessages     Message[]   @relation("MessageSender")
+  receivedMessages Message[]   @relation("MessageReceiver")
+  commentReplies   CommentReply[]
+  messageReactions MessageReaction[]
+}
+
+model Message {
+  id          Int       @id @default(autoincrement())
+  senderId    Int
+  receiverId  Int
+  text        String    @db.Text
+  readAt      DateTime?
+  createdAt   DateTime  @default(now())
+  sender      User      @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver    User      @relation("MessageReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  reply       MessageReply?
+  repliedBy   MessageReply[] @relation("RepliesToMessage")
+  reactions   MessageReaction[]
+
+  @@index([senderId, receiverId, createdAt])
+  @@index([receiverId, readAt])
+  @@index([receiverId, senderId])
+}
+
+model MessageReaction {
+  id          Int      @id @default(autoincrement())
+  messageId  Int
+  userId     Int
+  messageOwnerId Int
+  emoji      String
+  createdAt  DateTime @default(now())
+  
+  message    Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId]) // Only one reaction per user per message
+  @@index([messageId])
 }
 
 model Story {
@@ -106,6 +146,7 @@ model Comment {
   user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   post      Post         @relation(fields: [postId], references: [id], onDelete: Cascade)
   likes     CommentLike[]
+  replies   CommentReply[]
 }
 
 model CommentLike {
@@ -119,6 +160,32 @@ model CommentLike {
 
   @@unique([userId, commentId])
 }
+
+model CommentReply {
+  id        Int          @id @default(autoincrement())
+  content   String
+  commentId Int
+  userId    Int
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment   Comment      @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@index([commentId, createdAt])
+}
+
+model MessageReply {
+  id          Int       @id @default(autoincrement())
+  messageId   Int       @unique
+  replyToId   Int
+  replyToText String    @db.Text
+  createdAt   DateTime  @default(now())
+  message     Message   @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  replyTo     Message   @relation("RepliesToMessage", fields: [replyToId], references: [id], onDelete: Cascade)
+
+  @@index([replyToId])
+}
+
 
 model PostLike {
   id        Int      @id @default(autoincrement())
@@ -149,4 +216,11 @@ enum Gender {
   FEMALE
   CUSTOM
   PREFER_NOT_TO_SAY
+}
+
+model VerifyEmail {
+  id        String   @id @default(uuid())
+  userEmail String   @unique
+  code      Int
+  expiresAt DateTime
 }

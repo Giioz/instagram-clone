@@ -121,7 +121,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                 profileUsername={user.username}
               />
 
-              <MessageButton />
+              <MessageButton username={user.username} />
             </>
           )}
         </div>

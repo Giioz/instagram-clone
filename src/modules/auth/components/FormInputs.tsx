@@ -9,6 +9,7 @@ interface TextInputProps {
   required?: boolean;
   error?: string;
   className?: string;
+  maxLength?: number;
 }
 
 export default function TextInput({
@@ -20,6 +21,7 @@ export default function TextInput({
   required = false,
   error,
   className = "",
+  maxLength,
 }: TextInputProps) {
   const inputStyle =
     "w-full h-12 md:w-[560px] md:h-[60px]  border border-[#445664] rounded-[16px]";
@@ -30,6 +32,7 @@ export default function TextInput({
         name={name}
         type={type}
         required={required}
+        maxLength={maxLength}
         className={inputStyle + " px-4 py-3 " + className}
         placeholder={placeholder}
         value={value}

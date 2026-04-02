@@ -1,6 +1,8 @@
 import { Hono } from 'hono';
 import bcrypt from "bcryptjs";
 import { prisma } from "@/src/lib/db";
+import { cookies } from 'next/headers';
+import { resend } from '@/src/lib/resend';
 
 const app = new Hono();
 
@@ -47,8 +49,11 @@ app.post('/api/auth/register', async (c) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
+    const code = Math.floor(100000 + Math.random() * 900000);
 
-    const user = await prisma.user.create({
+    
+  const [user, verification] = await prisma.$transaction([
+    prisma.user.create({
       data: {
         email,
         password: hashedPassword,
@@ -56,6 +61,35 @@ app.post('/api/auth/register', async (c) => {
         username,
         birthday: new Date(birthday),
       },
+    }),
+
+    prisma.verifyEmail.create({
+      data: {
+        userEmail: email,
+        code,
+        expiresAt: new Date(Date.now() + 1000 * 60 * 15),
+      },
+    }),
+  ]);
+
+
+    const cookieStore = await cookies();
+    cookieStore.set("pending_verification_email", email, {
+      httpOnly: true,
+      maxAge: 60 * 15,
+      path: "/",
+    });
+
+
+    await resend.emails.send({
+      from: 'onboarding@resend.dev',
+      to: 'khachaturovirobert@gmail.com',
+      subject: "Your verification code",
+      html: `
+      <p>Your verification code is:</p>
+      <h2 style="letter-spacing: 8px;">${code}</h2>
+      <p>This code expires in 15 minutes.</p>
+    `,
     });
 
     return c.json(

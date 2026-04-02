@@ -1,4 +1,4 @@
-import { MoreHorizontal, Trash2 } from "lucide-react";
+import { X, MoreHorizontal, Trash2 } from "lucide-react";
 import Link from "next/link";
 import type { User, Story } from "@prisma/client";
 import type { JWTPayload } from "@/src/lib/auth";

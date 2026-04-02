@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useCurrentUser } from "@/src/modules/auth/hooks/useCurrentUser";
 import { PostPreviewModal } from "./PostPreviewModal";
 import { PostSelectionModal } from "./PostSelectionModal";
-
-
 
 interface CreatePostModalProps {
   isOpen: boolean;
@@ -15,25 +14,44 @@ interface CreatePostModalProps {
 export function CreatePostModal({
   isOpen,
   onClose,
-  onPostCreated,
 }: CreatePostModalProps) {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const { data: currentUser } = useCurrentUser();
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [showPreview, setShowPreview] = useState(false);
 
   const handleImageSelected = (imageUrl: string) => {
-    setSelectedImage(imageUrl);
-    setShowPreview(true);
+    setSelectedImages((prev) => {
+      if (prev.includes(imageUrl)) return prev; 
+      return [...prev, imageUrl];
+    });
+    if (selectedImages.length === 0) {
+      setShowPreview(true);
+    }
   };
 
   const handleClosePreview = () => {
     setShowPreview(false);
-    setSelectedImage(null);
+    setSelectedImages([]);
   };
 
   const handleCloseAll = () => {
     setShowPreview(false);
-    setSelectedImage(null);
+    setSelectedImages([]);
     onClose();
+  };
+
+  const handleAddMoreImages = (newImages: string[]) => {
+    setSelectedImages((prev) => {
+      const isRemoval = newImages.length < prev.length && 
+                        newImages.every(url => prev.includes(url));
+      
+      if (isRemoval) {
+        return newImages; 
+      }
+
+      const combined = [...prev, ...newImages];
+      return [...new Set(combined)];
+    });
   };
 
   return (
@@ -44,12 +62,17 @@ export function CreatePostModal({
         onImageSelected={handleImageSelected}
       />
       
-      {selectedImage && (
+      {selectedImages.length > 0 && (
         <PostPreviewModal
           isOpen={showPreview}
           onClose={handleClosePreview}
-          imageUrl={selectedImage}
+          imageUrls={selectedImages}
           onPostCreated={handleCloseAll}
+          onAddMoreImages={handleAddMoreImages}
+          currentUser={currentUser ? {
+            username: currentUser.username,
+            imageUrl: (currentUser as any).imageUrl || null,
+          } : undefined}
         />
       )}
     </>

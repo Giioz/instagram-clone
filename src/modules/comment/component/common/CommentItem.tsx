@@ -33,12 +33,12 @@ export default function CommentItem({ comment, postAuthorUsername, onDelete }: C
 
   return (
     <div className="flex gap-3 items-start group">
-      <div className="relative w-8 h-8 flex-shrink-0">
+      <div className="relative w-[32] h-[32] flex-shrink-0">
         {comment.user.imageUrl ? (
           <img
             src={comment.user.imageUrl}
             alt={`${comment.user.username}'s profile`}
-            className="rounded-full object-cover w-full h-full border-[0.5px] border-gray-800"
+            className="rounded-full object-cover w-full h-full"
           />
         ) : (
           <div className="w-full h-full rounded-full bg-gray-700 flex items-center justify-center">
@@ -58,11 +58,16 @@ export default function CommentItem({ comment, postAuthorUsername, onDelete }: C
           </span>
         </div>
         
-        <div className="flex items-center gap-3 mt-1">
-          <span className="text-[#A8A8A8] text-[12px] font-normal">
+        <div className="flex items-center gap-3 mt-2 text-[#A2AAB4]">
+          <span className="text-[12px] font-normal">
             {getRelativeTime(new Date(comment.createdAt))}
           </span>
-          <button className="text-[#A8A8A8] text-[12px] font-semibold hover:text-white transition-colors">
+        {likes > 0 && (
+        <span className="text-[12px] font-semibold">
+            {likes} like
+        </span>
+         )}
+          <button className=" text-[12px] font-semibold hover:text-white transition-colors">
             Reply
           </button>
           {canDelete && (
@@ -84,6 +89,7 @@ export default function CommentItem({ comment, postAuthorUsername, onDelete }: C
           }`}
         >
           <Heart size={12} fill={isLiked ? "currentColor" : "none"} />
+          
         </button>
       </div>
     </div>

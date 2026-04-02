@@ -1,7 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
-import { usePostUpload } from "../../hooks/usePostUpload";
+import { PostUploader } from "../section/PostUploader";
 
 
 
@@ -20,14 +20,12 @@ export function PostSelectionModal({
     onImageSelected(mediaUrl);
   };
 
-  const { PostUploader } = usePostUpload(handleUpload);
-
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
-      <div className="bg-[#262626] w-full max-w-[540px]  rounded-[30px] shadow-2xl flex flex-col overflow-hidden">
-        <div className="h-[43px] bg-[#202328] border-b border-[#363636] flex items-center justify-center">
+      <div className="bg-[#202328] w-full max-w-[540px]  rounded-[30px] shadow-2xl flex flex-col overflow-hidden">
+        <div className="h-[43px] bg-[#0B1014] border-b border-[#363636] flex items-center justify-center">
           <h2 className="text-white font-semibold text-[16px]">Create new post</h2>
           <button
             onClick={onClose}
@@ -37,7 +35,7 @@ export function PostSelectionModal({
           </button>
         </div>
 
-        <div className=" h-[540px] flex flex-col items-center justify-center space-y-4 ">
+        <div className=" h-[540px] flex flex-col items-center justify-center  gap-[12px] ">
           <div className="relative">
             <svg 
               aria-label="Icon to represent media such as images or videos" 
@@ -56,10 +54,10 @@ export function PostSelectionModal({
           </div>
 
           <p className="text-white text-[20px] font-normal">
-Drag photos and videos here
+            Drag photos and videos here
           </p>
 
-          <PostUploader />
+          <PostUploader onUpload={handleUpload} />
         </div>
       </div>
     </div>
